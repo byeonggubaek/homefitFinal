@@ -11,7 +11,7 @@ const MemberProfileEdit = () => {
 
     const [nickname, setNickname] = useState(member?.MEM_NICKNAME || "");
     const [pnumber, setPnumber] = useState(member?.MEM_PNUMBER || "");
-    const [imgUrl, setImgUrl] = useState(member?.MEM_IMG || "/member/member.png");
+    const [imgUrl] = useState(member?.MEM_IMG || "/member/member.png");
 
     const handleUpdate = async () => {
         try {

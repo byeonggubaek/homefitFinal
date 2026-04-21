@@ -7,11 +7,9 @@ import { useNavigate } from 'react-router-dom';
 const MemberLogoutMain = () => {
   const { refetch } = useUser();  //     
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleLogout = async () => {
-    setLoading(true);
     setError(null);
     try {
       await axios.post(
@@ -26,7 +24,6 @@ const MemberLogoutMain = () => {
       console.error('로그아웃 실패:', e);
       setError('로그아웃 중 오류가 발생했습니다. 다시 시도해주세요.');
     } finally {
-      setLoading(false);
     }
   };
 

@@ -1,5 +1,5 @@
   import { useState, useEffect } from "react";
-  import { Trophy, Star, Lock, CheckCircle2, Target, Flame, Award, Dumbbell } from "lucide-react";
+  import { Trophy, Star, Lock, CheckCircle2, Target, Dumbbell } from "lucide-react";
   import { Card } from "../components/ui/card";
   import { Progress } from "../components/ui/progress";
   import { Badge } from "../components/ui/badge";

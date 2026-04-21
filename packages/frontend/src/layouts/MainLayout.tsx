@@ -1,7 +1,5 @@
 // src/layouts/MainLayout.jsx
-import type { NavItem } from 'shared';
 import { Link, Outlet } from 'react-router-dom';
-import { useEffect, useState } from 'react';
 import { useDarkMode } from '@/hooks/useDarkMode';
 import WdogNavi from '@/components/WdogNavi'
 import WdogAutoInput from '@/components/WdogAutoInput'

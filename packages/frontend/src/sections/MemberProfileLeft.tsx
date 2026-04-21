@@ -2,7 +2,7 @@
 import { useUser } from "@/hooks/UserContext";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, 
          AlertDialogFooter, AlertDialogHeader, AlertDialogMedia, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { Trash2Icon, CircleDollarSign, SettingsIcon, UserIcon, User } from "lucide-react"
+import { Trash2Icon, CircleDollarSign, SettingsIcon, UserIcon } from "lucide-react"
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 

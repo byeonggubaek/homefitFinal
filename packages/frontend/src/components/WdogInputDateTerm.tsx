@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { ko } from 'date-fns/locale';
 import { CalendarIcon } from 'lucide-react';
 import { type DateRange } from 'react-day-picker';
-import { format, parse, startOfMonth, endOfMonth, addDays, addMonths } from 'date-fns';
+import { format, parse, startOfMonth, endOfMonth } from 'date-fns';
 
 import { Calendar } from '@/components/ui/calendar';
 import { Input } from '@/components/ui/input';
