@@ -1,5 +1,5 @@
 import WdogBreadClum from "@/components/WdogBreadClum";
-import WdogInputDateTerm from "@/components/WdogInputDateTerm";
+import HistoryContentMain from "@/sections/HistoryContentMain";
 
 export default function HistoryContent() {
   return (
@@ -8,9 +8,7 @@ export default function HistoryContent() {
       <div className="flex gap-4">
         <WdogBreadClum page="HistoryContent"/> 
       </div>
-      <div className="flex gap-4 border p-1 rounded-lg bg-condition border-primary">
-        <WdogInputDateTerm title="운동기간"/>
-      </div>        
+      <HistoryContentMain/>
     </div>
   );
 }

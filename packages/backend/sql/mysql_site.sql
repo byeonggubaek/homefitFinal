@@ -54,8 +54,8 @@ INSERT INTO T_NAV_SUB_ITEM VALUES
 ('NAV00001', 'S0001', '오늘의운동','/menu/dashboard.jpg', '프로그램에 따라 운동을 수행합니다.', 'WorkoutDashboard', '/workout/dashboard');
 INSERT INTO T_NAV_SUB_ITEM VALUES
 ('NAV00002', 'S0001', '운동내역','/menu/state.jpg', '운동 내역을 확인합니다.', 'HistoryState', '/history/state');
--- INSERT INTO T_NAV_SUB_ITEM VALUES
--- ('NAV00002', 'S0002', '콘텐츠제작','/menu/content.jpg', '운동 내역으로 SNS 콘텐츠를 자동 생성합니다.', 'HistoryContent', '/history/content');
+INSERT INTO T_NAV_SUB_ITEM VALUES
+('NAV00002', 'S0002', '운동내역상세','/menu/content.jpg', '운동 상세내역을 확인합니다.', 'HistoryContent', '/history/content');
 INSERT INTO T_NAV_SUB_ITEM VALUES
 ('NAV00003', 'S0001', '포인트','/menu/point.jpg', '운동 포인트를 확인합니다.', 'RewardPoint', '/reward/point');
 INSERT INTO T_NAV_SUB_ITEM VALUES
@@ -393,19 +393,19 @@ CREATE TABLE T_MEMBER_PLAN (
 
 -- 테스트 데이터
 INSERT INTO T_MEMBER_PLAN (MEM_ID, WOO_ID, MEP_DATE, MEP_TARGET_REPS, MEP_TARGET_SETS, MEP_UNIT, MEP_ACHIEVED, MEP_DT)
-VALUES (2, 1, '2026-04-03', 30, 3, '초', 'C', sysdate());
+VALUES (2, 1, '2026-04-19', 30, 3, '초', 'C', sysdate());
 INSERT INTO T_MEMBER_PLAN (MEM_ID, WOO_ID, MEP_DATE, MEP_TARGET_REPS, MEP_TARGET_SETS, MEP_UNIT, MEP_ACHIEVED, MEP_DT)
-VALUES (2, 2, '2026-04-03', 20, 2, '회', 'C', sysdate());
+VALUES (2, 2, '2026-04-19', 20, 2, '회', 'C', sysdate());
 INSERT INTO T_MEMBER_PLAN (MEM_ID, WOO_ID, MEP_DATE, MEP_TARGET_REPS, MEP_TARGET_SETS, MEP_UNIT, MEP_ACHIEVED, MEP_DT)
-VALUES (2, 3, '2026-04-03', 10, 3, '회', 'C', sysdate());
+VALUES (2, 3, '2026-04-19', 10, 3, '회', 'C', sysdate());
 
 INSERT INTO T_MEMBER_PLAN (MEM_ID, WOO_ID, MEP_DATE, MEP_TARGET_REPS, MEP_TARGET_SETS, MEP_UNIT, MEP_ACHIEVED, MEP_DT)
-VALUES (2, 1, '2026-04-05', 30, 3, '회', 'C', sysdate());
+VALUES (2, 1, '2026-04-21', 30, 3, '회', 'C', sysdate());
 
 INSERT INTO T_MEMBER_PLAN (MEM_ID, WOO_ID, MEP_DATE, MEP_TARGET_REPS, MEP_TARGET_SETS, MEP_UNIT, MEP_ACHIEVED, MEP_DT)
-VALUES (2, 1, '2026-04-07', 60, 2, '회', 'C', sysdate());
+VALUES (2, 1, '2026-04-23', 60, 2, '회', 'C', sysdate());
 INSERT INTO T_MEMBER_PLAN (MEM_ID, WOO_ID, MEP_DATE, MEP_TARGET_REPS, MEP_TARGET_SETS, MEP_UNIT, MEP_ACHIEVED, MEP_DT)
-VALUES (2, 2, '2026-04-07', 20, 3, '회', 'C', sysdate());
+VALUES (2, 2, '2026-04-23', 20, 3, '회', 'C', sysdate());
 
 SELECT	*
 FROM	T_MEMBER_PLAN;
@@ -428,27 +428,27 @@ ALTER TABLE T_WORKOUT_RECORD ADD INDEX T_WORKOUT_RECORD_WOR_ID_VIEW_IX (WOR_ID_V
 INSERT INTO T_WORKOUT_RECORD 
 (WOR_ID_VIEW, MEM_ID, WOR_DT, WOR_DESC, WOR_STATUS)
 VALUES
-('WOR00001', 1, '2026-04-03', '첫번째 운동', 'C');
+('WOR00001', 1, '2026-04-19', '첫번째 운동', 'C');
 INSERT INTO T_WORKOUT_RECORD 
 (WOR_ID_VIEW, MEM_ID, WOR_DT, WOR_DESC, WOR_STATUS)
 VALUES
-('WOR00002', 1, '2026-04-07', '두번째 운동', 'C');
+('WOR00002', 1, '2026-04-23', '두번째 운동', 'C');
 INSERT INTO T_WORKOUT_RECORD 
 (WOR_ID_VIEW, MEM_ID, WOR_DT, WOR_DESC, WOR_STATUS)
 VALUES
-('WOR00003', 2, '2026-04-05', '첫번째 운동', 'C');
+('WOR00003', 2, '2026-04-21', '첫번째 운동', 'C');
 INSERT INTO T_WORKOUT_RECORD 
 (WOR_ID_VIEW, MEM_ID, WOR_DT, WOR_DESC, WOR_STATUS)
 VALUES
-('WOR00004', 2, '2026-04-06', '두번째 운동', 'C');
+('WOR00004', 2, '2026-04-22', '두번째 운동', 'C');
 INSERT INTO T_WORKOUT_RECORD 
 (WOR_ID_VIEW, MEM_ID, WOR_DT, WOR_DESC, WOR_STATUS)
 VALUES
-('WOR00005', 3, '2026-04-03', '첫번째 운동', 'C');
+('WOR00005', 3, '2026-04-19', '첫번째 운동', 'C');
 INSERT INTO T_WORKOUT_RECORD 
 (WOR_ID_VIEW, MEM_ID, WOR_DT, WOR_DESC, WOR_STATUS)
 VALUES
-('WOR00006', 4, '2026-04-05', '첫번째 운동', 'C');
+('WOR00006', 4, '2026-04-21', '첫번째 운동', 'C');
 
 SELECT * FROM T_WORKOUT_RECORD;
 --------------------------------------------------------------------------------------------------------------------------------
@@ -560,8 +560,8 @@ CREATE TABLE T_MEMBER_ACHIEVEMENT (
 
 -- [시연용 데이터 삽입] 3번 유저(sung@naver.com) 기준
 INSERT INTO T_MEMBER_ACHIEVEMENT (MEM_ID, ACH_ID, PRG_VAL, PRG_PCT, CMP_YN, CMP_DT) VALUES
-(2, 1, 1, 100, 'Y', '2026-04-05 10:00:00'), -- 완료
-(2, 3, 1, 100, 'Y', '2026-04-07 14:00:00'), -- 완료
+(2, 1, 1, 100, 'Y', '2026-04-21 10:00:00'), -- 완료
+(2, 3, 1, 100, 'Y', '2026-04-23 14:00:00'), -- 완료
 (2, 2, 3, 60, 'N', NULL),                -- 진행 중
 (2, 4, 2, 28, 'N', NULL);                -- 진행 중
 
@@ -621,15 +621,15 @@ ALTER TABLE T_INVOICE ADD INDEX T_INVOICE_INV_ID_VIEW_IX (INV_ID_VIEW);
 INSERT INTO T_INVOICE 
 (INV_ID_VIEW, INV_DT, MEM_ID, INV_TOT_AMT, INV_USED_POINT)
 VALUES
-('INV00001', '2026-04-05', 1,12000,1000);
+('INV00001', '2026-04-21', 1,12000,1000);
 INSERT INTO T_INVOICE 
 (INV_ID_VIEW, INV_DT, MEM_ID, INV_TOT_AMT, INV_USED_POINT)
 VALUES
-('INV00002', '2026-04-06', 1,14000,0);
+('INV00002', '2026-04-22', 1,14000,0);
 INSERT INTO T_INVOICE 
 (INV_ID_VIEW, INV_DT, MEM_ID, INV_TOT_AMT, INV_USED_POINT)
 VALUES
-('INV00003', '2026-04-07', 2,13000,1000);
+('INV00003', '2026-04-23', 2,13000,1000);
 
 SELECT  *
 FROM    T_INVOICE;

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { createWorkoutChartConfig, createWorkoutChartConfigWithPlan } from "@/lib/utils";
+import { apiGet, createWorkoutChartConfig, createWorkoutChartConfigWithPlan } from "@/lib/utils";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import type { ChartConfig } from "@/components/ui/chart";
@@ -39,14 +39,12 @@ export default function HistoryStateMain() {
   const [columnsWithPlan, setColumnsWithPlan] = useState<ColDesc[]>([]);
   useEffect(() => {
     // 일별 상세 테이블 
-    fetch('http://localhost:3001/api/getColDesc?table=WorkoutRecord')
-      .then(res => res.json())
+    apiGet('/api/getColDesc', { table: 'WorkoutRecord' })
       .then(data => {
         setColumnsRecord(data.data);  
       });
     // 일별 성취 테이블
-    fetch('http://localhost:3001/api/getColDesc?table=WorkoutAchievement')
-      .then(res => res.json())
+    apiGet('/api/getColDesc', { table: 'WorkoutAchievement' })
       .then(data => {
         setColumnsWithPlan(data.data);  
       });      
@@ -68,19 +66,16 @@ export default function HistoryStateMain() {
 
     const fetchData = async () => {
       try {
-        // API 경로 정의
-        const gridUrl  = `http://localhost:3001/api/workout/getWorkoutRecords?mem_id=${memId}&from_dt=${startDt}&to_dt=${endDt}`;
-        const chartUrl = `http://localhost:3001/api/workout/getWorkoutRecordsByPivot?mem_id=${memId}&from_dt=${startDt}&to_dt=${endDt}`;
-
+        const params = {
+          mem_id: memId,
+          from_dt: startDt,
+          to_dt: endDt,
+        };        
         // Promise.all로 병렬 호출
-        const [gridRes, chartRes] = await Promise.all([
-          fetch(gridUrl),
-          fetch(chartUrl),
+        const [gridJson, chartJson] = await Promise.all([
+          apiGet('/api/workout/getWorkoutRecords', params),
+          apiGet('/api/workout/getWorkoutRecordsByPivot', params),
         ]);
-        console.log("gridRes:", gridRes);
-
-        const gridJson = await gridRes.json();
-        const chartJson = await chartRes.json();
         // 그리드 데이터 업데이트 1,3번 탭
         if (gridJson.success) {
           setRecords(gridJson.data);
@@ -114,21 +109,19 @@ export default function HistoryStateMain() {
 
     const fetchData = async () => {
       try {
-        // API 경로 정의
-        const gridWithPlanUrl = `http://localhost:3001/api/workout/getWorkoutRecordsWithPlan?mem_id=${memId}&from_dt=${startDt}&to_dt=${endDt}`;
-        const chartWithPlanUrl = `http://localhost:3001/api/workout/getWorkoutRecordsWithPlanByPivot?mem_id=${memId}&from_dt=${startDt}&to_dt=${endDt}`;
-
+        const params = {
+          mem_id: memId,
+          from_dt: startDt,
+          to_dt: endDt,
+        };        
         // Promise.all로 병렬 호출
-        const [gridWithPlanRes, chartWithPlanRes] = await Promise.all([
-          fetch(gridWithPlanUrl),
-          fetch(chartWithPlanUrl)
+        const [gridWithPlanJson, chartWithPlanJson] = await Promise.all([
+          apiGet('/api/workout/getWorkoutRecordsWithPlan', params),
+          apiGet('/api/workout/getWorkoutRecordsWithPlanByPivot', params)
         ]);
-        const gridWithPlanJson = await gridWithPlanRes.json();
-        const chartWithPlanJson = await chartWithPlanRes.json();
         if (gridWithPlanJson.success) {
           setRecordsWithPlan(gridWithPlanJson.data);
         }        
-        console.log("chartWithPlanJson:", chartWithPlanJson);
         // 계획 대비 실적 차트 데이터 및 설정 업데이트 2번 탭
         if (chartWithPlanJson.success) {
           setChartDataWithPlan(chartWithPlanJson.data);
@@ -169,17 +162,16 @@ export default function HistoryStateMain() {
 
     const fetchData = async () => {
       try {
-        // API 경로 정의
-        const gridUrl  = `http://localhost:3001/api/workout/getWorkoutRecords?mem_id=${memId}&from_dt=${startDt}&to_dt=${endDt}`;
-        const chartUrl = `http://localhost:3001/api/workout/getWorkoutRecordsByPivot?mem_id=${memId}&from_dt=${startDt}&to_dt=${endDt}`;
-
+        const params = {
+          mem_id: memId,
+          from_dt: startDt,
+          to_dt: endDt,
+        };
         // Promise.all로 병렬 호출
-        const [gridRes, chartRes] = await Promise.all([
-          fetch(gridUrl),
-          fetch(chartUrl),
+        const [gridJson, chartJson] = await Promise.all([
+          apiGet('/api/workout/getWorkoutRecords', params),
+          apiGet('/api/workout/getWorkoutRecordsByPivot', params)
         ]);
-        const gridJson = await gridRes.json();
-        const chartJson = await chartRes.json();
         // 그리드 데이터 업데이트
         if (gridJson.success) {
           setRecordsMonthly(gridJson.data);
