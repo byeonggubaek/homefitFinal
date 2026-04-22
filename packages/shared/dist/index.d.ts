@@ -40,6 +40,7 @@ export interface Member {
     MEM_POINT: number;
     MEM_EXP_POINT: number;
     MEM_LVL: number;
+    MEM_STREAK: number;
     MES_ID: number;
     MES_NAME: string;
     MES_FEE: number;
@@ -59,8 +60,19 @@ export interface Membership {
     MES_FEE: number;
     MES_BENEFITS: Benefit[];
 }
+export interface MemberPlan {
+    MEP_ID: number;
+    MEM_ID: number;
+    WOO_ID: number;
+    MEP_DATE: string;
+    MEP_TARGET_REPS: number;
+    MEP_UNIT: string;
+    MEP_ACHIEVED: 'Y' | 'N';
+    MEP_DT: string;
+}
 export interface WorkoutRecord {
     WOR_ID: number;
+    WOR_ID_VIEW: string;
     WOR_DT: Date;
     WOO_ID: number;
     WOO_NAME: string;
@@ -85,6 +97,11 @@ export interface WorkoutDetail {
     WOD_GUIDE: string;
     WOD_TARGET_REPS: number;
     WOD_TARGET_SETS: number;
+    WOD_COUNT: number;
+    WOD_POINT: number;
+    WOD_ACCURACY: number;
+    WOD_TIME: number;
+    WOO_TYPE: string;
 }
 export interface CurWorkoutRecord {
     WOR_ID: number;
@@ -98,6 +115,7 @@ export interface Workout {
     WOO_GUIDE: string;
     WOO_TARGET_REPS: number;
     WOO_TARGET_SETS: number;
+    WOO_TYPE: string;
 }
 export interface RankingItem {
     RANK: number;
@@ -106,6 +124,33 @@ export interface RankingItem {
     MEM_IMG: string;
     CNT: number;
     WORKOUT_TIME: number;
+}
+export interface Goods {
+    GOD_ID: number;
+    GOD_ID_VIEW: string;
+    GOD_NAME: string;
+    GOD_PRICE: number;
+    GOD_DCRATE: number;
+    GOD_IMG: string | null;
+}
+export interface WorkoutRecordWithPlan {
+    WO_DT: string;
+    WOO_ID: number;
+    WOO_NAME: string;
+    WOO_NAME_COLOR: string;
+    PLAN_CNT: number;
+    ACT_CNT: number;
+    LEFT_CNT: number;
+}
+export interface T_AI_REPORT {
+    AIR_ID?: number;
+    AIR_ID_VIEW?: string;
+    WOR_ID: number;
+    AI_SUMMARY?: string | null;
+    AI_RECOMMENDATIONS?: any | null;
+    AI_NEXT_INTENSITY?: string | null;
+    AI_RANK_PERCENT?: number | null;
+    REG_DT?: Date | string;
 }
 export interface T_MEMBER {
     MEM_ID?: number;
@@ -121,6 +166,7 @@ export interface T_MEMBER {
     MEM_POINT: number;
     MEM_EXP_POINT: number;
     MEM_LVL: number;
+    MEM_STREAK: number;
     MES_ID: number;
 }
 export interface T_WORKOUT_RECORD {
@@ -141,9 +187,29 @@ export interface T_WORKOUT_DETAIL {
     WOD_ACCURACY: number;
     WOD_TIME: number;
 }
+export interface PointHistory {
+    wo_dt: Date | string;
+    img: string;
+    accuracy: number;
+    point: number;
+    title: string;
+    type: 'earned' | 'used';
+}
+export interface Achievement {
+    id: string;
+    title: string;
+    icon: string;
+    description: string;
+    progress: number;
+    progressPercentage: number;
+    status: 'completed' | 'inProgress' | 'locked';
+    completedDate: string | null;
+    points: number;
+}
 export interface ChartData {
-    COLUMNS: Record<string, any>;
-    DATA: Record<string, any>;
+    VSQL: string | null;
+    DATA: any;
+    COLUMNS: any;
 }
 export interface Postcode {
     POSTCODE: string;

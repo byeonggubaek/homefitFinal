@@ -40,7 +40,7 @@ memberRouter.post("/login", async (req: Request, res: Response) => {
       const token = jwt.sign(
         {
           mem_id: member.MEM_ID,
-          mem_id_act: member.MEM_ID_ACT,
+          mem_id_view: member.MEM_ID_VIEW,
           mem_name: member.MEM_NAME,
           mem_nickname: member.MEM_NICKNAME,
           mem_img: member.MEM_IMG,

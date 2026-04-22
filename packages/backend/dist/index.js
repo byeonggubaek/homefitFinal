@@ -1,11 +1,11 @@
 import express from 'express';
-import memberRouter from "./routes/member.js";
 import cors from 'cors';
 import dotenv from 'dotenv';
 import session from 'express-session';
 import Logger from './logger.js';
-import { closePool, getMenus, getColDescs, getMenuPos, searchMenus } from './db.js';
+import { closePool, getMenus, getMenuPos, getColDesc, searchMenus } from './db.js';
 import aiRouter from './routes/ai.js';
+import memberRouter from "./routes/member.js";
 import workoutRouter from './routes/workout.js';
 import systemRouter from './routes/system.js';
 import rewardRouter from './routes/reward.js';
@@ -87,7 +87,7 @@ async function gracefulShutdown(signal) {
     }
 }
 //================================================================================================
-//   
+//  시스템 API (로그, 모니터링 등) - 포팅 후
 //================================================================================================
 app.get('/api/getMenus', async (req, res) => {
     let apiLogEntry = null;
@@ -152,6 +152,31 @@ app.get('/api/searchMenus', async (req, res) => {
         await Logger.logApiSuccess(apiLogEntry);
     }
     catch (error) {
+        await Logger.logApiError(apiLogEntry, error);
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+});
+app.get('/api/getColDesc', async (req, res) => {
+    let apiLogEntry = null;
+    try {
+        // 데이터 조회 (WorkoutRecord 고정 조회 혹은 필요 시 query parameter 사용 가능)
+        const { table } = req.query;
+        // API 시작 로그 기록
+        apiLogEntry = await Logger.logApiStart('GET /api/getColDesc', [table]);
+        const data = await getColDesc(table);
+        res.json({
+            success: true,
+            data: data,
+            timestamp: new Date().toISOString()
+        });
+        // 성공 로그 기록
+        await Logger.logApiSuccess(apiLogEntry);
+    }
+    catch (error) {
+        // 에러 로그 기록
         await Logger.logApiError(apiLogEntry, error);
         res.status(500).json({
             success: false,

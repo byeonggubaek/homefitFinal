@@ -1,6 +1,6 @@
 import express from 'express';
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { getMember, getWorkouts } from '../db.js';
+import { deleteWorkoutDetails, getMember, getWorkouts, insertWorkoutDetail } from '../db.js';
 const aiRouter = express.Router();
 //================================================================================================
 // AI 설정 
@@ -43,7 +43,7 @@ aiRouter.post('/recExercise', async (req, res) => {
       - 나이가 50세 이상이면, 강도가 high여도 과도하게 무리하지 않도록 세트/횟수를 약간 보수적으로 조정하세요.
       - 여성은 남성에 비해 세트/횟수를 약간 낮게 설정하는 것을 고려하세요.
       [지시]
-      - 보유운동 중 가장 적합한 3가지만 골라서 추천하세요.
+      - 보유운동 중 가장 적합한 4가지만 골라서 추천하세요.
       - 각 운동에 대해:
         - 권장 시간/횟수 WOD_TARGET_REPS
         - 권장 세트 WOD_TARGET_SETS
@@ -73,16 +73,30 @@ aiRouter.post('/recExercise', async (req, res) => {
             // JSON 문자열이 ```json ... ``` 으로 둘러싸여 있을 수 있으니 깔끔히 정리
             const cleanText = rawText.replace(/```json|```/g, "").trim();
             recommendedExercises = JSON.parse(cleanText);
+            await deleteWorkoutDetails(userProfile.wor_id); // 기존 운동 상세 내역 삭제 
+            const workoutDetails = recommendedExercises.map((workout) => ({
+                WOR_ID: userProfile.wor_id, // FK & PK (운동기록 ID)
+                WOO_ID: workout.WOO_ID, // FK & PK (운동 ID)
+                WOD_GUIDE: workout.WOD_GUIDE || null, // 운동 가이드
+                WOD_TARGET_REPS: workout.WOD_TARGET_REPS || 0, // 권장 횟수
+                WOD_TARGET_SETS: workout.WOD_TARGET_SETS || 0, // 권장 세트수
+                WOD_COUNT: 0, // 실제 실행 횟수
+                WOD_POINT: 0, // 획득 포인트
+                WOD_ACCURACY: 0, // 운동 정확도
+                WOD_TIME: 0, // 운동시간(분)        
+            }));
+            await Promise.all(workoutDetails.map(async (workout) => {
+                await insertWorkoutDetail(workout); // 새로운 운동 상세 내역 삽입
+            }));
         }
         catch (parseError) {
             console.warn("AI 응답 파싱 실패, fallback 사용");
-            recommendedExercises = [
-                { WOO_ID: "WOO00001", WOO_NAME: "플랭크", WOO_IMG: "plank.png", WOO_UNIT: "초", WOD_GUIDE: "30초 동안 자세 유지하기.", WOD_TARGET_REPS: 0, WOD_TARGET_SETS: 1 },
-                { WOO_ID: "WOO00002", WOO_NAME: "스쿼트", WOO_IMG: "squat.png", WOO_UNIT: "회", WOD_GUIDE: "다리를 어깨 너비로 벌리고 앉았다 일어나기", WOD_TARGET_REPS: 0, WOD_TARGET_SETS: 1 },
-                { WOO_ID: "WOO00003", WOO_NAME: "런지", WOO_IMG: "lunge.png", WOO_UNIT: "회", WOD_GUIDE: "좌우 각 권장 횟수만큼 반복하기", WOD_TARGET_REPS: 0, WOD_TARGET_SETS: 1 }
-            ];
+            return res.status(500).json({
+                success: false,
+                error: "AI 응답 파싱 실패, fallback 사용",
+                timestamp: new Date().toISOString()
+            });
         }
-        // 💡 여기서 한 번만 응답
         return res.json({
             success: true,
             data: recommendedExercises,
@@ -93,22 +107,18 @@ aiRouter.post('/recExercise', async (req, res) => {
         // 💡 그 외의 실제 에러는 500으로 처리
         console.error("AI 추천 에러:", error);
         if (error.message.includes("429") || error.message.includes("403") || error.message.includes("Quota")) {
-            // fallback: 정상 응답으로 돌려줌
-            return res.json({
-                success: true,
-                data: [
-                    { WOO_ID: "WOO00001", WOO_NAME: "플랭크", WOO_IMG: "plank.png", WOO_UNIT: "초", WOD_GUIDE: "30초 동안 자세 유지하기.", WOD_TARGET_REPS: 0, WOD_TARGET_SETS: 2 },
-                    { WOO_ID: "WOO00002", WOO_NAME: "스쿼트", WOO_IMG: "squat.png", WOO_UNIT: "회", WOD_GUIDE: "다리를 어깨 너비로 벌리고 앉았다 일어나기", WOD_TARGET_REPS: 0, WOD_TARGET_SETS: 2 },
-                    { WOO_ID: "WOO00003", WOO_NAME: "런지", WOO_IMG: "lunge.png", WOO_UNIT: "회", WOD_GUIDE: "좌우 각 권장 횟수만큼 반복하기", WOD_TARGET_REPS: 0, WOD_TARGET_SETS: 2 }
-                ],
+            return res.status(500).json({
+                success: false,
+                error: "AI 응답 파싱 실패, fallback 사용",
                 timestamp: new Date().toISOString()
             });
         }
-        return res.status(500).json({
-            success: false,
-            error: "AI 모델 연결 실패",
-            message: error.message
-        });
+        else
+            return res.status(500).json({
+                success: false,
+                error: error.message,
+                timestamp: new Date().toISOString()
+            });
     }
 });
 export default aiRouter;
