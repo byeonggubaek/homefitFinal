@@ -118,8 +118,9 @@ export async function apiGet(path: any, query = {}) {
   return res.json();
 }
 
-export const getCommonPinningStyles = <TData,>(
-  column: Column<TData>
+export const getCommonPinningStyles = <TData>(
+  column: Column<TData>,
+  type: "header" | "body" | "footer"= "body"
 ): CSSProperties => {
   const isPinned = column.getIsPinned()
   const isLastLeftPinnedColumn =
@@ -128,9 +129,9 @@ export const getCommonPinningStyles = <TData,>(
     isPinned === "right" && column.getIsFirstColumn("right")
   return {
     boxShadow: isLastLeftPinnedColumn
-      ? "-2px 0 2px -2px var(--color-focus) inset"
+      ? "-1px 0 1px -1px var(--primary) inset"
       : isFirstRightPinnedColumn
-        ? "2px 0 2px -2px var(--color-focus) inset"
+        ? "1px 0 1px -1px var(--primary) inset"
         : undefined,
     left: isPinned === "left" ? `${column.getStart("left")}px` : undefined,
     right: isPinned === "right" ? `${column.getAfter("right")}px` : undefined,
@@ -139,7 +140,7 @@ export const getCommonPinningStyles = <TData,>(
     minWidth: column.getSize(),
     maxWidth: column.getSize(),
     background: isPinned ? "var(--background)" : undefined,
+    color: isPinned ? (type === "body" ? "var(--primary)" : "var(--focus)") : undefined,
     zIndex: isPinned ? 1 : 0,
-    opacity: isPinned ? 0.98 : 1,
   }
 }

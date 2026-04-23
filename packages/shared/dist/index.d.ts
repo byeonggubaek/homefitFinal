@@ -24,6 +24,9 @@ export interface ColDesc {
     COL_NAME: string;
     COL_TYPE: string;
     COL_WIDTH?: number;
+    COL_HIDDEN?: string;
+    COL_SORT: string;
+    COL_PIN: string;
     COL_SUM?: string;
     COL_AGG?: number;
 }
@@ -75,8 +78,8 @@ export interface WorkoutRecord {
     WOR_ID_VIEW: string;
     WOR_DT: Date;
     WOO_ID: number;
-    WOO_NAME: string;
     WOO_NAME_COLOR: string;
+    WOO_NAME: string;
     WOD_TARGET_REPS: number;
     WOD_TARGET_SETS: number;
     WOD_COUNT_P: number;

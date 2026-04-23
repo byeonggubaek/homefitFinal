@@ -1,14 +1,14 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
-import { toPng } from 'html-to-image';
 import { TrendingUp, Zap, Star, Activity, Download} from 'lucide-react';
 import { useUser } from "@/hooks/UserContext";
-import type { WorkoutDetail } from 'shared';
 import { Spinner } from "@/components/ui/spinner"
 import {
   BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis
 } from 'recharts';
+import type { WorkoutDetail } from 'shared';
 import jsPDF from 'jspdf';
+import { toPng } from 'html-to-image';
 
 const MemberWorkReportMain: React.FC = () => {
   const { member } = useUser();

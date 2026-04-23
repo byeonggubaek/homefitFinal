@@ -7,7 +7,6 @@ const MemberPwCheck = () => {
   const navigate = useNavigate();
 
   const handleVerify = async () => {
-    console.log("보내는 비번:", password);
     try {
       const response = await axios.post(
         'http://localhost:3001/api/member/pwcheck', 

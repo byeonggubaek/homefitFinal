@@ -160,6 +160,7 @@ async function _getColDesc(table: string): Promise<any[]> {
            COL_NAME,
            COL_TYPE,
            COL_WIDTH,
+           COL_HIDDEN,
            COL_SORT,
            COL_PIN,
            COL_SUM
@@ -177,10 +178,11 @@ export const getColDesc = async (table : string): Promise<ColDesc[]> => {
     COL_NAME: record.COL_NAME,
     COL_TYPE: record.COL_TYPE,
     COL_WIDTH: Number(record.COL_WIDTH), // 숫자형 변환 보장
+    COL_HIDDEN: record.COL_HIDDEN, // 'Y'이면 true, 아니면 false
     COL_SORT: record.COL_SORT, //    
     COL_PIN: record.COL_PIN, // 
     COL_SUM: record.COL_SUM,
-    COL_AGGREGATE: 0, // 초기값 0으로 설정 (필요에 따라 다른 초기값으로 변경 가능)
+    COL_AGG: 0, // 초기값 0으로 설정 (필요에 따라 다른 초기값으로 변경 가능)
   }));
 };
 // =================================================================================================================
@@ -638,8 +640,8 @@ async function _getWorkoutRecords(mem_id: number, start_dt: string, end_dt: stri
             A.WOR_ID_VIEW,
             B.WOO_ID,
             A.WOR_DT,
+            MOD(B.WOO_ID - 1, 5) + 1 AS WOO_NAME_COLOR, 
             C.WOO_NAME,
-            MOD(B.WOO_ID - 1, 5) AS WOO_NAME_COLOR, 
             B.WOD_TARGET_REPS,
             B.WOD_TARGET_SETS,
             B.WOD_COUNT,
@@ -668,8 +670,8 @@ export const getWorkoutRecords = async (mem_id: number, start_dt: string, end_dt
     WOR_ID_VIEW: record.WOR_ID_VIEW,
     WOO_ID: record.WOO_ID,
     WOR_DT: record.WOR_DT,
-    WOO_NAME: record.WOO_NAME,
     WOO_NAME_COLOR: record.WOO_NAME_COLOR,
+    WOO_NAME: record.WOO_NAME,
     WOD_TARGET_REPS: record.WOD_TARGET_REPS,
     WOD_TARGET_SETS: record.WOD_TARGET_SETS,
     WOD_COUNT: record.WOD_COUNT,

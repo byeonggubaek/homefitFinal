@@ -1,0 +1,75 @@
+name: Deploy Frontend (React -> Public Nginx)
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "**"
+  workflow_dispatch:
+
+jobs:
+  deploy-frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: "npm"
+          cache-dependency-path: package-lock.json
+
+      - name: Build React (Vite)
+        run: |
+          set -e
+          npm ci
+          npm run build
+          test -d dist
+
+      - name: Ensure web root exists on Public
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.PUBLIC_HOST }}
+          username: ${{ secrets.PUBLIC_USER }}
+          key: ${{ secrets.PRIVATE_SSH_KEY }}
+          script: |
+            set -e
+            sudo mkdir -p /usr/share/nginx/html
+
+      # 주의: /usr/share/nginx/html 이 이 프론트 전용일 때만 사용.
+      - name: Clean old frontend files
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.PUBLIC_HOST }}
+          username: ${{ secrets.PUBLIC_USER }}
+          key: ${{ secrets.PRIVATE_SSH_KEY }}
+          script: |
+            set -e
+            sudo find /usr/share/nginx/html -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+
+      - name: Upload dist to Public
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.PUBLIC_HOST }}
+          username: ${{ secrets.PUBLIC_USER }}
+          key: ${{ secrets.PRIVATE_SSH_KEY }}
+          source: "dist/**"
+          target: "/usr/share/nginx/html"
+          strip_components: 1
+
+      - name: Reload Nginx
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.PUBLIC_HOST }}
+          username: ${{ secrets.PUBLIC_USER }}
+          key: ${{ secrets.PRIVATE_SSH_KEY }}
+          script: |
+            set -e
+            sudo nginx -t
+            sudo systemctl reload nginx

@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react"
-import { columns } from "./HistoryContentColumns"
-import { DataTable } from "./HistoryContentTables"
 import { useUser } from "@/hooks/UserContext";
 import { endOfMonth, format, startOfMonth } from "date-fns";
 import { apiGet } from "@/lib/utils";
-import type { WorkoutRecord } from "shared"
+import type { ColDesc, WorkoutRecord } from "shared"
 import type { DateRange } from "react-day-picker";
+import WdogTableData from "@/components/WdogTableData";
 
 export default function HistoryContentMain() {
   const { member } = useUser();  // Context에서 공유
@@ -18,7 +17,8 @@ export default function HistoryContentMain() {
     from: startOfMonth(today),
     to: endOfMonth(today),  // 이번 달의 마지막 날
   });
-  const [records, setRecords] = useState<WorkoutRecord[]>([]);
+  const [data, setData] = useState<WorkoutRecord[]>([]);
+  const [columnTest, setColumnTest] = useState<ColDesc[]>([]);
   useEffect(() => {
     if (!member?.MEM_ID || !dateRange.from || !dateRange.to) return;
 
@@ -30,16 +30,20 @@ export default function HistoryContentMain() {
       mem_id: memId,
       from_dt: startDt,
       to_dt: endDt,
-    };        
+    };   
+    apiGet('/api/getColDesc', { table: 'WorkoutRecord' })
+      .then(data => {
+        setColumnTest(data.data);
+      });      
     apiGet('/api/workout/getWorkoutRecords', params)
       .then(data => {
-        setRecords(data.data);  
+        setData(data.data);  
       });
-  }, [member?.MEM_ID, dateRange.from, dateRange.to]);    
+  }, [member?.MEM_ID, dateRange.from?.toISOString(), dateRange.to?.toISOString()]);    
 
   return (
-    <div className="container mx-auto py-10">
-      <DataTable columns={columns} data={records} caption={`운동 상세 내역 (${dateRange.from ? format(dateRange.from, 'yyyy-MM-dd') : ''} ~ ${dateRange.to ? format(dateRange.to, 'yyyy-MM-dd') : ''})`} />
+    <div className="w-full">
+      <WdogTableData column={columnTest} data={data} caption={`운동 상세 내역 (${dateRange.from ? format(dateRange.from, 'yyyy-MM-dd') : ''} ~ ${dateRange.to ? format(dateRange.to, 'yyyy-MM-dd') : ''})`} />
     </div>
   )
 }
