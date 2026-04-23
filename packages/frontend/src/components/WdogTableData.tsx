@@ -123,6 +123,8 @@ const WdogTableData = ({
       },
       meta: { label: col.COL_NAME },
       size: col.COL_WIDTH ?? 150,
+      // 마지막 컬럼은 minSize: 0으로 설정하여 확장 가능하게
+      minSize: column.indexOf(col) === column.length - 1 ? 0 : 80,
       enableSorting: col.COL_SORT === "Y",
       enableHiding: col.COL_ID.endsWith("_COLOR") || col.COL_HIDDEN === "N",
       cell: ({ row }: any) => {
@@ -289,9 +291,9 @@ const WdogTableData = ({
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     defaultColumn: {
-      size: 100,
+      size: 150,  // 기본 크기 조정 (기존 100에서 증가)
       minSize: 80,
-      maxSize: 300,
+      maxSize: 500,  // 최대 크기 증가
     },
    
   });
@@ -354,7 +356,7 @@ const WdogTableData = ({
       </div>
 
       <div className="w-full overflow-x-auto rounded-md border">
-        <Table className="w-max min-w-full border-separate border-spacing-0">
+        <Table className="w-max min-w-full border-separate border-spacing-0 table-fixed">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow
