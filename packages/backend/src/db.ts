@@ -160,6 +160,8 @@ async function _getColDesc(table: string): Promise<any[]> {
            COL_NAME,
            COL_TYPE,
            COL_WIDTH,
+           COL_SORT,
+           COL_PIN,
            COL_SUM
     FROM T_COLUMN_DESC
     WHERE COL_TBL_NAME = ?
@@ -175,8 +177,10 @@ export const getColDesc = async (table : string): Promise<ColDesc[]> => {
     COL_NAME: record.COL_NAME,
     COL_TYPE: record.COL_TYPE,
     COL_WIDTH: Number(record.COL_WIDTH), // 숫자형 변환 보장
+    COL_SORT: record.COL_SORT, //    
+    COL_PIN: record.COL_PIN, // 
     COL_SUM: record.COL_SUM,
-    COL_AGGREGATE: 0 // 초기값 0으로 설정 (필요에 따라 다른 초기값으로 변경 가능)
+    COL_AGGREGATE: 0, // 초기값 0으로 설정 (필요에 따라 다른 초기값으로 변경 가능)
   }));
 };
 // =================================================================================================================

@@ -7,15 +7,13 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { ArrowUpDown } from "lucide-react"
-import type { WorkoutRecord } from "shared"
 import { formatDate, formatNumber } from "@/lib/utils"
 
-export const columns: ColumnDef<WorkoutRecord>[] = [
+export const columns: ColumnDef<any>[] = [
   {
     accessorKey: 'SELECT',    
     id: "SELECT",
@@ -58,9 +56,8 @@ export const columns: ColumnDef<WorkoutRecord>[] = [
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>메뉴</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(workout.id)}
+              onClick={() => navigator.clipboard.writeText(String(workout.WOO_ID))}
             >
               운동번호 복사
             </DropdownMenuItem>
@@ -108,6 +105,17 @@ export const columns: ColumnDef<WorkoutRecord>[] = [
     size: 100,       
     meta: {label: '운동명',},    
     header: "운동명",
+    cell: ({ getValue }) => {
+      const value = getValue<string>()
+      const className =
+        value === "프랭크"
+          ? "bg-red-100 px-2 py-1 rounded"
+          : value === "스쿼트"
+            ? "bg-yellow-100 px-2 py-1 rounded"
+            : "bg-blue-100 px-2 py-1 rounded"
+
+      return <span className={className}>{value}</span>
+    },    
   },    
   {
     accessorKey: "WOD_TARGET_REPS",

@@ -42,6 +42,7 @@ export default function HistoryStateMain() {
     apiGet('/api/getColDesc', { table: 'WorkoutRecord' })
       .then(data => {
         setColumnsRecord(data.data);  
+        console.log("컬럼 정보:", data.data); // 컬럼 정보 확인용 로그
       });
     // 일별 성취 테이블
     apiGet('/api/getColDesc', { table: 'WorkoutAchievement' })

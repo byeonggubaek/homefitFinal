@@ -1,5 +1,4 @@
 import {
-  type Column,
   type ColumnDef,
   type ColumnPinningState,
   type SortingState,
@@ -16,7 +15,6 @@ import {
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
@@ -31,43 +29,22 @@ import {
 } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { useState, type CSSProperties } from "react"
+import { useState } from "react"
+import { getCommonPinningStyles } from "@/lib/utils"
+import { TableProperties } from 'lucide-react';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
-  data: TData[]
-}
-
-const getCommonPinningStyles = <TData,>(
-  column: Column<TData>
-): CSSProperties => {
-  const isPinned = column.getIsPinned()
-  const isLastLeftPinnedColumn =
-    isPinned === "left" && column.getIsLastColumn("left")
-  const isFirstRightPinnedColumn =
-    isPinned === "right" && column.getIsFirstColumn("right")
-
-  return {
-    boxShadow: isLastLeftPinnedColumn
-      ? "-4px 0 4px -4px hsl(var(--border)) inset"
-      : isFirstRightPinnedColumn
-        ? "4px 0 4px -4px hsl(var(--border)) inset"
-        : undefined,
-    left: isPinned === "left" ? `${column.getStart("left")}px` : undefined,
-    right: isPinned === "right" ? `${column.getAfter("right")}px` : undefined,
-    position: isPinned ? "sticky" : "relative",
-    width: column.getSize(),
-    minWidth: column.getSize(),
-    maxWidth: column.getSize(),
-    background: isPinned ? "hsl(var(--background))" : undefined,
-    zIndex: isPinned ? 1 : 0,
-    opacity: isPinned ? 0.98 : 1,
-  }
+  data: TData[],
+  caption: string;
+  colors?: string[]; // 색상 배열
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  caption = '',
+  colors = ['bg-table-1', 'bg-table-2', 'bg-table-3', 'bg-table-4', 'bg-table-5'],
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [globalFilter, setGlobalFilter] = useState("")
@@ -77,7 +54,6 @@ export function DataTable<TData, TValue>({
     left: ["SELECT", "ACTIONS"], // 실제 컬럼 id로 바꾸세요. 예: ["select", "name"]
     right: [], // 예: ["actions"]
   })
-
   const table = useReactTable({
     data,
     columns,
@@ -98,62 +74,65 @@ export function DataTable<TData, TValue>({
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     defaultColumn: {
-      size: 140,
+      size: 100,
       minSize: 80,
-      maxSize: 500,
+      maxSize: 300,
     },
-  })
+  });
 
   return (
     <div className="w-full">
       <div className="flex items-center gap-2 py-4">
-        <Input
-          placeholder="조건 검색..."
-          value={globalFilter}
-          onChange={(e) => setGlobalFilter(e.target.value)}
-          className="max-w-sm"
-        />
+        <div className="flex items-center gap-2">
+          <TableProperties className="text-primary" />
+          <span>{caption}</span>
+        </div>
+        <div className="ml-auto flex justify-end gap-2">
+          <Input
+            placeholder="조건 검색..."
+            value={globalFilter}
+            onChange={(e) => setGlobalFilter(e.target.value)}
+            className="min-w-min"
+          />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="ml-auto">
+                컬럼 설정
+              </Button>
+            </DropdownMenuTrigger>
 
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              컬럼 설정
-            </Button>
-          </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem
+                onSelect={(e) => {
+                  e.preventDefault()
+                  table.toggleAllColumnsVisible(true)
+                }}
+              >
+                전체 컬럼 표시
+              </DropdownMenuItem>
 
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>컬럼 표시 설정</DropdownMenuLabel>
+              <DropdownMenuSeparator />
 
-            <DropdownMenuItem
-              onSelect={(e) => {
-                e.preventDefault()
-                table.toggleAllColumnsVisible(true)
-              }}
-            >
-              전체 컬럼 표시
-            </DropdownMenuItem>
-
-            <DropdownMenuSeparator />
-
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => (
-                <DropdownMenuCheckboxItem
-                  key={column.id}
-                  className="capitalize"
-                  checked={column.getIsVisible()}
-                  onSelect={(e) => e.preventDefault()}
-                  onCheckedChange={(value) =>
-                    column.toggleVisibility(!!value)
-                  }
-                >
-                  {(column.columnDef.meta as { label?: string } | undefined)
-                    ?.label ?? column.id}
-                </DropdownMenuCheckboxItem>
-              ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
+              {table
+                .getAllColumns()
+                .filter((column) => column.getCanHide())
+                .map((column) => (
+                  <DropdownMenuCheckboxItem
+                    key={column.id}
+                    className="capitalize"
+                    checked={column.getIsVisible()}
+                    onSelect={(e) => e.preventDefault()}
+                    onCheckedChange={(value) =>
+                      column.toggleVisibility(!!value)
+                    }
+                  >
+                    {(column.columnDef.meta as { label?: string } | undefined)
+                      ?.label ?? column.id}
+                  </DropdownMenuCheckboxItem>
+                ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
 
       <div className="w-full overflow-x-auto rounded-md border">
@@ -162,7 +141,7 @@ export function DataTable<TData, TValue>({
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow
                 key={headerGroup.id}
-                className="bg-accent hover:bg-accent"
+                className="bg-gray-100"
               >
                 {headerGroup.headers.map((header) => {
                   const { column } = header
@@ -251,8 +230,7 @@ export function DataTable<TData, TValue>({
 
       <div className="flex items-center justify-end space-x-2 py-4">
         <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} 행이 선택되었습니다.
+          {table.getFilteredSelectedRowModel().rows.length} / {table.getFilteredRowModel().rows.length} 항목이 선택되었습니다.
         </div>
 
         <Button

@@ -2,10 +2,10 @@ import { useEffect, useState } from "react"
 import { columns } from "./HistoryContentColumns"
 import { DataTable } from "./HistoryContentTables"
 import { useUser } from "@/hooks/UserContext";
-import type { WorkoutRecord } from "shared"
-import type { DateRange } from "react-day-picker";
 import { endOfMonth, format, startOfMonth } from "date-fns";
 import { apiGet } from "@/lib/utils";
+import type { WorkoutRecord } from "shared"
+import type { DateRange } from "react-day-picker";
 
 export default function HistoryContentMain() {
   const { member } = useUser();  // Context에서 공유
@@ -39,7 +39,7 @@ export default function HistoryContentMain() {
 
   return (
     <div className="container mx-auto py-10">
-      <DataTable columns={columns} data={records} />
+      <DataTable columns={columns} data={records} caption={`운동 상세 내역 (${dateRange.from ? format(dateRange.from, 'yyyy-MM-dd') : ''} ~ ${dateRange.to ? format(dateRange.to, 'yyyy-MM-dd') : ''})`} />
     </div>
   )
 }

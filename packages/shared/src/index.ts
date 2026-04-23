@@ -31,6 +31,8 @@ export interface ColDesc {
   COL_NAME: string;
   COL_TYPE: string;
   COL_WIDTH?: number;
+  COL_SORT: string;
+  COL_PIN: string;
   COL_SUM?: string;
   COL_AGG?: number;
 }

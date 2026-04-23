@@ -1,6 +1,8 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import type { ChartConfig } from "@/components/ui/chart";
+import type { Column } from "@tanstack/react-table";
+import type { CSSProperties } from "react";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -114,4 +116,30 @@ export async function apiGet(path: any, query = {}) {
   }
 
   return res.json();
+}
+
+export const getCommonPinningStyles = <TData,>(
+  column: Column<TData>
+): CSSProperties => {
+  const isPinned = column.getIsPinned()
+  const isLastLeftPinnedColumn =
+    isPinned === "left" && column.getIsLastColumn("left")
+  const isFirstRightPinnedColumn =
+    isPinned === "right" && column.getIsFirstColumn("right")
+  return {
+    boxShadow: isLastLeftPinnedColumn
+      ? "-2px 0 2px -2px var(--color-focus) inset"
+      : isFirstRightPinnedColumn
+        ? "2px 0 2px -2px var(--color-focus) inset"
+        : undefined,
+    left: isPinned === "left" ? `${column.getStart("left")}px` : undefined,
+    right: isPinned === "right" ? `${column.getAfter("right")}px` : undefined,
+    position: isPinned ? "sticky" : "relative",
+    width: column.getSize(),
+    minWidth: column.getSize(),
+    maxWidth: column.getSize(),
+    background: isPinned ? "var(--background)" : undefined,
+    zIndex: isPinned ? 1 : 0,
+    opacity: isPinned ? 0.98 : 1,
+  }
 }
