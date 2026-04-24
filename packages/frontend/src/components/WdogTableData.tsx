@@ -56,7 +56,7 @@ const WdogTableData = ({
       size: col.COL_WIDTH === 0 ? undefined : col.COL_WIDTH,
       minSize: column.indexOf(col) === column.length - 1 ? 0 : col.COL_WIDTH,
       enableSorting: col.COL_SORT === "Y",
-      enableHiding: col.COL_ID.endsWith("_COLOR") || col.COL_HIDDEN === "N",
+      enableHiding: col.COL_HIDDEN,
       header: ({ table, column }: any) => {
         switch (col.COL_TYPE) {
           case "chk":
@@ -245,7 +245,6 @@ const WdogTableData = ({
   const [columnPinning, setColumnPinning] = useState<ColumnPinningState>({ left: [], right: [] })  
   useEffect(() => {
     const nextVisibility: VisibilityState = {}
-
     column.forEach((col) => {
       if (col.COL_ID.endsWith("_COLOR")) {
         nextVisibility[col.COL_ID] = false
@@ -323,7 +322,13 @@ const WdogTableData = ({
               <DropdownMenuItem
                 onSelect={(e) => {
                   e.preventDefault()
-                  table.toggleAllColumnsVisible(true)
+                  const nextVisibility = Object.fromEntries(
+                    table.getAllLeafColumns().map((column) => {
+                      const colId = (column.columnDef.meta as any)?.COL_ID ?? column.id
+                      return [column.id, !String(colId).endsWith('_COLOR')]
+                    })
+                  )
+                  setColumnVisibility(nextVisibility)
                 }}
               >
                 전체 컬럼 표시
@@ -333,9 +338,12 @@ const WdogTableData = ({
 
               {table
                 .getAllColumns()
-                .filter((column) => column.getCanHide())
+                .filter((col) => {
+                  const colDef = column.find((c) => c.COL_ID === col.id)
+                  return colDef?.COL_HIDDEN === "Y"
+                })
                 .map((column) => (
-                  column.id.endsWith("_COLOR") ? null : (
+                  (
                     <DropdownMenuCheckboxItem
                       key={column.id}
                       className="capitalize"
