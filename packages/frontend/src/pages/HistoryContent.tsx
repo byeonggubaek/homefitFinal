@@ -8,10 +8,10 @@ export default function HistoryContent() {
         <WdogBreadClum page="HistoryContent"/> 
       </div>
       <div className="flex gap-4">
-        <div className="w-4/5">
+        {/* <div className="w-4/5"> */}
           <HistoryContentMain/>
-        </div>
-        <div className="w-1/5"></div>
+        {/* </div> */}
+        {/* <div className="w-1/5"></div> */}
       </div>
     </div>
   );

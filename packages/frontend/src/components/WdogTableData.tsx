@@ -36,9 +36,9 @@ import { ArrowUpDown, MoreHorizontal, TableProperties } from 'lucide-react';
 import { Checkbox } from "./ui/checkbox"
 
 interface DataTableProps {
-  column: any[]
-  data: any[],
-  caption: string;
+  column: (any & { cellRenderer?: (row: any) => React.ReactNode })[]  // cellRenderer 추가
+  data: any[]
+  caption: string
   rowsPerPage?: number  // <- 페이지당 행 수 prop 추가 (기본 10)  
 }
 
@@ -48,14 +48,18 @@ const WdogTableData = ({
   caption = '',
   rowsPerPage = 10,  // <- prop 받기
 }: DataTableProps) => {
-  const columns2 = useMemo<ColumnDef<any>[]>(() => {
+  const columnActual = useMemo<ColumnDef<any>[]>(() => {
     const dynamicColumns = column.map((col) => ({
       accessorKey: col.COL_ID,
       id: col.COL_ID,
+      meta: { label: col.COL_NAME },
+      size: col.COL_WIDTH === 0 ? undefined : col.COL_WIDTH,
+      minSize: column.indexOf(col) === column.length - 1 ? 0 : col.COL_WIDTH,
+      enableSorting: col.COL_SORT === "Y",
+      enableHiding: col.COL_ID.endsWith("_COLOR") || col.COL_HIDDEN === "N",
       header: ({ table, column }: any) => {
         switch (col.COL_TYPE) {
           case "chk":
-            console.log("Rendering checkbox header for column:", col.COL_ID)
             return (
               <Checkbox
                 checked={
@@ -121,12 +125,6 @@ const WdogTableData = ({
             )
         }        
       },
-      meta: { label: col.COL_NAME },
-      size: col.COL_WIDTH ?? 150,
-      // 마지막 컬럼은 minSize: 0으로 설정하여 확장 가능하게
-      minSize: column.indexOf(col) === column.length - 1 ? 0 : 80,
-      enableSorting: col.COL_SORT === "Y",
-      enableHiding: col.COL_ID.endsWith("_COLOR") || col.COL_HIDDEN === "N",
       cell: ({ row }: any) => {
         const value = row.getValue(col.COL_ID)
 
@@ -140,20 +138,23 @@ const WdogTableData = ({
               />
             )
           case "act":
+            if (col.cellRenderer) {
+              return col.cellRenderer(row.original);
+            }            
             return  (
               <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="h-8 w-8 p-0">
-                      <span className="sr-only">Open menu</span>
-                      <MoreHorizontal className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem>상세 보기</DropdownMenuItem>
-                    <DropdownMenuItem>수정</DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              )
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="h-8 w-8 p-0">
+                    <span className="sr-only">Open menu</span>
+                    <MoreHorizontal className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem>상세 보기</DropdownMenuItem>
+                  <DropdownMenuItem>수정</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )
           case "key":
             return <div className="font-medium">{String(value ?? "")}</div>
           case "qty":
@@ -192,7 +193,7 @@ const WdogTableData = ({
 
             return (
               <div className="text-right font-bold">
-                <span>합 : </span>{formatNumber(total)}
+                {formatNumber(total)}
               </div>
             )
           case "max":
@@ -257,7 +258,6 @@ const WdogTableData = ({
       right: [],
     }
     column.forEach((col) => {
-      console.log(`Processing column for pinning: ${col.COL_ID} with COL_PIN: ${col.COL_PIN}`)
       if (col.COL_PIN === "L") {
         nextPinning.left!.push(col.COL_ID)
       } else if (col.COL_PIN === "R") {
@@ -271,7 +271,7 @@ const WdogTableData = ({
   const [rowSelection, setRowSelection] = useState({})
   const table = useReactTable({
     data,
-    columns: columns2,
+    columns: columnActual,
     state: {
       sorting,
       globalFilter,
@@ -292,7 +292,7 @@ const WdogTableData = ({
     getFilteredRowModel: getFilteredRowModel(),
     defaultColumn: {
       size: 150,  // 기본 크기 조정 (기존 100에서 증가)
-      minSize: 80,
+      minSize: 30,
       maxSize: 500,  // 최대 크기 증가
     },
    
@@ -356,7 +356,10 @@ const WdogTableData = ({
       </div>
 
       <div className="w-full overflow-x-auto rounded-md border">
-        <Table className="w-max min-w-full border-separate border-spacing-0 table-fixed">
+        <Table 
+          className="min-w-full border-separate border-spacing-0 table-layout: auto"
+          style={{ width: table.getTotalSize() }}  // ← 추가
+        >
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow
@@ -369,7 +372,11 @@ const WdogTableData = ({
                     <TableHead
                       key={header.id}
                       colSpan={header.colSpan}
-                      style={getCommonPinningStyles(column, "header")}
+                      style={{
+                        ...getCommonPinningStyles(column, "header"),
+                        width: header.getSize(),
+                        minWidth: column.columnDef.minSize,
+                      }}
                       className="whitespace-nowrap border-b"
                     >
                       {header.isPlaceholder
@@ -397,7 +404,11 @@ const WdogTableData = ({
                     return (
                       <TableCell
                         key={cell.id}
-                        style={getCommonPinningStyles(column)}
+                        style={{
+                          ...getCommonPinningStyles(column),
+                          width: cell.column.getSize(),
+                          minWidth: column.columnDef.minSize,
+                        }}
                         className="whitespace-nowrap"
                       >
                         {flexRender(
@@ -430,7 +441,11 @@ const WdogTableData = ({
                     <TableCell
                       key={header.id}
                       colSpan={header.colSpan}
-                      style={getCommonPinningStyles(column)}
+                      style={{
+                        ...getCommonPinningStyles(column),
+                        width: header.getSize(),
+                        minWidth: column.columnDef.minSize,
+                      }}
                       className="border-t"
                     >
                       {header.isPlaceholder

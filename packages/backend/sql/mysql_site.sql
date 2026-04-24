@@ -160,23 +160,23 @@ CREATE TABLE T_COLUMN_DESC
     CONSTRAINT T_COLUMN_DESC_PK PRIMARY KEY (COL_TBL_NAME, COL_SEQ)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO T_COLUMN_DESC VALUES ('WorkoutRecord', 1, 1, 'SELECT', '', 'chk', 50, 'N', 'N', 'L', NULL);
-INSERT INTO T_COLUMN_DESC VALUES ('WorkoutRecord', 2, 2, 'ACTIONS', '', 'act', 50, 'N', 'N', 'L', NULL);
-INSERT INTO T_COLUMN_DESC VALUES ('WorkoutRecord', 3, 3, 'WOR_ID_VIEW', '운동번호', 'key', 80, 'N', 'N', 'L', NULL);
-INSERT INTO T_COLUMN_DESC VALUES ('WorkoutRecord', 4, 4, 'WOR_DT', '운동일', 'dat', 100, 'Y', 'Y', 'N', NULL);
-INSERT INTO T_COLUMN_DESC VALUES ('WorkoutRecord', 5, 5, 'WOO_NAME_COLOR', '색상', 'str', 100, 'Y', 'N', 'N', NULL);
-INSERT INTO T_COLUMN_DESC VALUES ('WorkoutRecord', 6, 6, 'WOO_NAME', '운동명', 'lst', 100, 'Y', 'Y', 'N', 'cnt');
-INSERT INTO T_COLUMN_DESC VALUES ('WorkoutRecord', 7, 7, 'WOD_TARGET_REPS', '반복횟수/초', 'qty', 100, 'Y', 'N', 'N', 'sum');
-INSERT INTO T_COLUMN_DESC VALUES ('WorkoutRecord', 8, 8, 'WOD_TARGET_SETS', '세트수', 'qty', 100, 'Y', 'N', 'N', 'avg');
-INSERT INTO T_COLUMN_DESC VALUES ('WorkoutRecord', 9, 9, 'WOD_COUNT', '실행횟수/초', 'qty', 100, 'Y', 'Y', 'N', 'min');
-INSERT INTO T_COLUMN_DESC VALUES ('WorkoutRecord', 10, 10, 'WOD_POINT', '획득포인트', 'qty', 100, 'Y', 'N', 'N', 'max');
-INSERT INTO T_COLUMN_DESC VALUES ('WorkoutRecord', 11, 11, 'WOR_DESC', '운동내역', 'str', 100, 'Y', 'N', 'N', NULL);
+INSERT INTO T_COLUMN_DESC VALUES ('WorkoutRecord', 1, 1, 'SELECT', '', 'chk', 40, 'N', 'N', 'L', NULL);
+INSERT INTO T_COLUMN_DESC VALUES ('WorkoutRecord', 2, 2, 'ACTIONS', '', 'act', 40, 'N', 'N', 'L', NULL);
+INSERT INTO T_COLUMN_DESC VALUES ('WorkoutRecord', 3, 3, 'WOR_ID_VIEW', '운동번호', 'key', 70, 'N', 'N', 'L', NULL);
+INSERT INTO T_COLUMN_DESC VALUES ('WorkoutRecord', 4, 4, 'WOR_DT', '운동일', 'dat', 90, 'Y', 'Y', 'N', NULL);
+INSERT INTO T_COLUMN_DESC VALUES ('WorkoutRecord', 5, 5, 'WOO_NAME_COLOR', '색상', 'str', 0, 'Y', 'N', 'N', NULL);
+INSERT INTO T_COLUMN_DESC VALUES ('WorkoutRecord', 6, 6, 'WOO_NAME', '운동명', 'lst', 70, 'Y', 'Y', 'N', 'cnt');
+INSERT INTO T_COLUMN_DESC VALUES ('WorkoutRecord', 7, 7, 'WOD_TARGET_REPS', '반복횟수/초', 'qty', 90, 'Y', 'N', 'N', 'sum');
+INSERT INTO T_COLUMN_DESC VALUES ('WorkoutRecord', 8, 8, 'WOD_TARGET_SETS', '세트수', 'qty', 90, 'Y', 'N', 'N', 'avg');
+INSERT INTO T_COLUMN_DESC VALUES ('WorkoutRecord', 9, 9, 'WOD_COUNT', '실행횟수/초', 'qty', 90, 'Y', 'Y', 'N', 'min');
+INSERT INTO T_COLUMN_DESC VALUES ('WorkoutRecord', 10, 10, 'WOD_POINT', '획득포인트', 'qty', 90, 'Y', 'N', 'N', 'max');
+INSERT INTO T_COLUMN_DESC VALUES ('WorkoutRecord', 11, 11, 'WOR_DESC', '운동내역', 'str', 0, 'Y', 'N', 'N', NULL);
 
 INSERT INTO T_COLUMN_DESC VALUES ('WorkoutAchievement', 1, 1, 'WO_DT', '운동일', 'dat', 80, 'N', 'Y', 'N',  NULL);
-INSERT INTO T_COLUMN_DESC VALUES ('WorkoutAchievement', 2, 2, 'WOO_NAME', '운동명', 'lst', 100, 'Y', 'N', 'N', NULL);
-INSERT INTO T_COLUMN_DESC VALUES ('WorkoutAchievement', 3, 3, 'PLAN_CNT', '계획횟수/초', 'qty', 100, 'Y', 'N', 'N', 'sum');
-INSERT INTO T_COLUMN_DESC VALUES ('WorkoutAchievement', 4, 4, 'ACT_CNT', '실행횟수/초', 'qty', 100, 'Y', 'N', 'N', 'sum');
-INSERT INTO T_COLUMN_DESC VALUES ('WorkoutAchievement', 5, 5, 'LEFT_CNT', '남은횟수/초', 'qty', 100, 'Y', 'N', 'N', 'sum');
+INSERT INTO T_COLUMN_DESC VALUES ('WorkoutAchievement', 2, 2, 'WOO_NAME', '운동명', 'lst', 60, 'Y', 'N', 'N', NULL);
+INSERT INTO T_COLUMN_DESC VALUES ('WorkoutAchievement', 3, 3, 'PLAN_CNT', '계획횟수/초', 'qty', 90, 'Y', 'N', 'N', 'sum');
+INSERT INTO T_COLUMN_DESC VALUES ('WorkoutAchievement', 4, 4, 'ACT_CNT', '실행횟수/초', 'qty', 90, 'Y', 'N', 'N', 'sum');
+INSERT INTO T_COLUMN_DESC VALUES ('WorkoutAchievement', 5, 5, 'LEFT_CNT', '남은횟수/초', 'qty', 90, 'Y', 'N', 'N', 'sum');
 
 SELECT *
 FROM   T_COLUMN_DESC
