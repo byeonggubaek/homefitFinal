@@ -29,4 +29,4 @@
 12. Python에서 Machine Learning을 이용하여 AI 모델을 이용할 수 있다.  
 
 ## 5.변경기록 
-1. 2026-04-24 : 페이지처리와 테이블 검색등의 기능을 포함하는 TableGrid 컨트롤 추가
+1. 2026-04-24 : 페이지처리와 테이블 검색등의 기능을 포함하는 TableGrid 컨트롤 추가 (예제: HistoryContentMain.tsx)
