@@ -139,7 +139,7 @@ const WdogTable = ({
                     classAdjust = ""
                     listValue = String(record[column.COL_ID + '_COLOR' as keyof typeof record]);
                     if(colors && listValue) {
-                      listValue = `${colors[parseInt(listValue)]} rounded px-2 py-1`;
+                      listValue = `${colors[parseInt(listValue)-1]} rounded px-2 py-1`;
                     }
                     break;  
                   default:
