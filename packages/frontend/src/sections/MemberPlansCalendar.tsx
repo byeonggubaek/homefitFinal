@@ -3,7 +3,6 @@ import {
   Calendar as CalendarIcon, ChevronLeft, ChevronRight,
   CheckCircle2, Loader2, Plus, Trash2, X, Dumbbell
 } from 'lucide-react';
-import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useUser } from '@/hooks/UserContext';
 import { deleteMemberPlan, getMemberPlan, getMonthlyMemberPlan, getWorkoutList, insertMemberPlan } from '@/lib/auth';
@@ -259,7 +258,7 @@ const MemberPlansCalendar = () => {
       </div>
 
       {/* ---------------- [ 우측: 일별 계획 영역 ] ---------------- */}
-      <div className="bg-slate-50 rounded-[32px] p-8 flex flex-col h-full min-h-[500px]">
+      <div className="bg-slate-50 rounded-[32px] p-8 flex flex-col h-full min-h-125">
         <div className="mb-6">
           <p className="text-indigo-500 text-sm font-bold mb-1 tracking-tight">DAILY PLAN</p>
           <h2 className="text-2xl font-black text-slate-800">

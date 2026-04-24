@@ -4,7 +4,6 @@ import { CircleDollarSign, LogOutIcon, SettingsIcon, UserIcon, LogIn, UserRoundP
 
 import { useUser } from '@/hooks/UserContext';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { useState } from 'react';
 import { logoutMember } from '@/lib/auth';
 

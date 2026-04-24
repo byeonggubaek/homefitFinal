@@ -400,7 +400,7 @@ const WorkoutStartMain: React.FC<{ wor_id: string | null }> = ({ wor_id }) => {
             {/* 🌟 [추가] 사용자 자세 유도용 가이드라인 박스 */}
             <div className="absolute inset-0 z-15 pointer-events-none flex flex-col items-center justify-center pb-8">
               {/* 반투명 점선 네모 박스 */}
-              <div className={`w-[500px] h-[400px] mt-10 border-4 border-dashed rounded-3xl transition-all duration-500 ${
+              <div className={`w-125 h-100 mt-10 border-4 border-dashed rounded-3xl transition-all duration-500 ${
                 isDetecting ? 'border-white/20' : 'border-emerald-400/70'
               }`}></div>
               

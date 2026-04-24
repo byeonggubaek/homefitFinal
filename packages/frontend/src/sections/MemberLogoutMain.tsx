@@ -1,6 +1,5 @@
 import { useUser } from '@/hooks/UserContext';
 import { logoutMember } from '@/lib/auth';
-import axios from 'axios';
 import { LogOut, ShieldCheck } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';

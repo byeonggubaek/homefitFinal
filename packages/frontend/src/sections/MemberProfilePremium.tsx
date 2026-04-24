@@ -69,7 +69,7 @@ const MemberProfilePremium = () => {
                             return (
                                 <div
                                     key={membership.MES_ID}
-                                    className={`flex-1 min-w-[320px] max-w-[420px] group relative border-2 rounded-3xl p-8 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl flex flex-col justify-between ${isVip ? 'border-purple-100 bg-purple-50/10 hover:border-purple-300' : (membership.MES_NAME === "PREMIUM" ? 'border-blue-100 bg-blue-50/20' : 'border-gray-100 bg-white')
+                                    className={`flex-1 min-w-[320px] max-w-105 group relative border-2 rounded-3xl p-8 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl flex flex-col justify-between ${isVip ? 'border-purple-100 bg-purple-50/10 hover:border-purple-300' : (membership.MES_NAME === "PREMIUM" ? 'border-blue-100 bg-blue-50/20' : 'border-gray-100 bg-white')
                                         }`}
                                 >
                                     <div>
