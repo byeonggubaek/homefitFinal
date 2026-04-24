@@ -1,4 +1,5 @@
 import { useUser } from "@/hooks/UserContext";
+import { apiGet } from "@/lib/auth";
 import { ShoppingCart, X } from "lucide-react"
 import { useEffect, useMemo, useState } from "react";
 import type { Goods } from "shared";
@@ -16,9 +17,13 @@ export default function RewardMallMain() {
   const [rewardItems, setRewardItems] = useState<Goods[]>([]);
 
   useEffect(() => {
-    fetch(`http://localhost:3001/api/reward/getGoods`)
-      .then(res => res.json())
-      .then(data => setRewardItems(data.data || []));
+    apiGet("/api/reward/getGoods")
+      .then(result => {
+        if (result.success) {
+          setRewardItems(result.data);
+        }
+      })
+      .catch(err => console.error("리워드 아이템 로딩 실패:", err));
   }, []);
 
   const handleAddToCart = (itemId: number) => {

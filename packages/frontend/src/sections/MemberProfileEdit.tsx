@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import axios from 'axios';
 import { useUser } from "@/hooks/UserContext";
 import { useNavigate } from 'react-router-dom';
 import { Smartphone, Mail, Award, Flame, Camera, ArrowLeft } from "lucide-react";
+import { logoutMember } from '@/lib/auth';
 
 const MemberProfileEdit = () => {
     // 1. refetch를 가져옵니다.
@@ -15,24 +15,12 @@ const MemberProfileEdit = () => {
 
     const handleUpdate = async () => {
         try {
-            const response = await axios.post(
-                'http://localhost:3001/api/member/edit',
-                { nickname, pnumber, img: imgUrl }, // 이미지 경로도 같이 전송
-                { withCredentials: true }
-            );
-
-            if (response.data.success) {
-                // 2. 🔥 핵심: 서버에 수정된 데이터를 세션에 넣었으니, 
-                // 프론트엔드에서도 최신 세션 정보를 다시 한 번 읽어오라고 시킵니다.
-                await refetch();
-
-                alert('성공적으로 수정되었습니다!');
-                navigate('/member/profile/main');
-            }
-        } catch (error) {
-            console.error(error);
-            alert('수정 중 오류가 발생했습니다.');
-        }
+            await logoutMember();
+            await refetch();
+            navigate('/');
+        } catch (e: any) {
+            console.error('프로필 업데이트 실패:', e);
+        } 
     };
 
     return (

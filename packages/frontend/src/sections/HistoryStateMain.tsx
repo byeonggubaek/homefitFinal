@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { apiGet, createWorkoutChartConfig, createWorkoutChartConfigWithPlan } from "@/lib/utils";
+import { createWorkoutChartConfig, createWorkoutChartConfigWithPlan } from "@/lib/utils";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import type { ChartConfig } from "@/components/ui/chart";
@@ -13,6 +13,7 @@ import WdogInputDateTermState from "@/components/WdogInputDateTermState";
 import { format, addDays, startOfMonth, endOfMonth } from "date-fns";
 import { type DateRange } from 'react-day-picker';
 import { useUser } from "@/hooks/UserContext";
+import { apiGet } from "@/lib/auth";
 
 export default function HistoryStateMain() {  
   const { member } = useUser();  // Context에서 공유

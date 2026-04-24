@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/card"
 import { Button } from '@/components/ui/button';
 import { useUser } from '@/hooks/UserContext';
+import { apiGet, apiPost } from '@/lib/auth';
 
 const WorkoutStartMain: React.FC<{ wor_id: string | null }> = ({ wor_id }) => {
   const navigate = useNavigate();
@@ -106,12 +107,8 @@ const WorkoutStartMain: React.FC<{ wor_id: string | null }> = ({ wor_id }) => {
         const lm = landmarks[idx];
         inputRow.push(lm.x * 1000, lm.y * 1000);
       });
-
-      const res = await fetch('http://localhost:8000/predict_exercise', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ landmarks: inputRow })
-      });
+      
+      const res = await apiPost('/api/ai/predictExercise', { landmarks: inputRow });
       const data = await res.json();
 
       if (data.success) {
@@ -258,8 +255,7 @@ const WorkoutStartMain: React.FC<{ wor_id: string | null }> = ({ wor_id }) => {
   const [workouts, setWorkout] = useState<WorkoutDetail[] | null>(null);
   useEffect(() => {
     if (!wor_id) return;
-    fetch(`http://localhost:3001/api/workout/getWorkoutDetails?mem_id=${member?.MEM_ID}&wor_id=${wor_id}`)
-      .then(res => res.json())
+    apiGet('/api/workout/getWorkoutDetails', { mem_id: member?.MEM_ID ?? '', wor_id: wor_id })
       .then(data => {
         setWorkout(data.data);
         // 🌟 [추가할 코드] setWorkout 바로 밑에 이 세 줄을 넣어주세요!
@@ -298,16 +294,10 @@ const WorkoutStartMain: React.FC<{ wor_id: string | null }> = ({ wor_id }) => {
       accuracy: finalAccuracy // 🔥 랜덤값 아웃! 진짜 내 실력 점수 투입!
     };
     try {
-      const res = await fetch('http://localhost:3001/api/workout/complete', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-
-      const data = await res.json();
-      if (data.success) {
+      const res = await apiPost('/api/workout/complete', payload);
+      if (res.success) {
         // ✅ 1. 포인트 값을 저장하고 완료 상태로 변경! (페이지 이동은 안 함)
-        setEarnedPoint(data.earnedPoint || 0);
+        setEarnedPoint(res.earnedPoint || 0);
         setIsFinished(true);
       } else {
         alert("저장에 실패했습니다. 다시 시도해주세요.");

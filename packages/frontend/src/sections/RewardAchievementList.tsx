@@ -1,16 +1,15 @@
-  import { useState, useEffect } from "react";
-  import { Trophy, Star, Lock, CheckCircle2, Target, Dumbbell } from "lucide-react";
-  import { Card } from "../components/ui/card";
-  import { Progress } from "../components/ui/progress";
-  import { Badge } from "../components/ui/badge";
-  import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
+import { useState, useEffect } from "react";
+import { Trophy, Star, Lock, CheckCircle2, Target, Dumbbell } from "lucide-react";
+import { Card } from "../components/ui/card";
+import { Progress } from "../components/ui/progress";
+import { Badge } from "../components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
 import { useUser } from "@/hooks/UserContext";
 import type { Achievement } from "shared";
+import { apiGet } from "@/lib/auth";
 
-  // [핵심 1] DB에서 넘어올 데이터 모양 정의
-
-
-  export default function RewardAchievementList() {
+// [핵심 1] DB에서 넘어올 데이터 모양 정의
+export default function RewardAchievementList() {
     const {member} = useUser();    
     // 1-1. 상태 관리: 전체 업적 데이터를 담을 그릇
     const [achievements, setAchievements] = useState<Achievement[]>([]);
@@ -19,9 +18,7 @@ import type { Achievement } from "shared";
     // 1-2. 데이터 불러오기 (백엔드 API 호출)
     useEffect(() => {
       if (!member?.MEM_ID) return;      
-      const mem_id = member.MEM_ID; 
-      fetch(`http://localhost:3001/api/reward/get_achievement_list?mem_id=${mem_id}`)
-        .then(res => res.json())
+      apiGet('/api/reward/get_achievement_list', {mem_id : member.MEM_ID})
         .then(result => {
           if (result.success) {
             setAchievements(result.data);

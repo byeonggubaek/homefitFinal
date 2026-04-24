@@ -9,6 +9,7 @@ import {
 import type { WorkoutDetail } from 'shared';
 import jsPDF from 'jspdf';
 import { toPng } from 'html-to-image';
+import { apiGet, apiPost } from '@/lib/auth';
 
 const MemberWorkReportMain: React.FC = () => {
   const { member } = useUser();
@@ -16,7 +17,6 @@ const MemberWorkReportMain: React.FC = () => {
 
   const [wor_id, setWorId] = useState<string | null>(null);
   const [wor_id_view, setWorIdView] = useState<string | null>(null);
- 
   const [exercises, setExercises] = useState<WorkoutDetail[]>([]);
   const [aiAnalysis, setAiAnalysis] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -25,32 +25,29 @@ const MemberWorkReportMain: React.FC = () => {
     if (!member || !member.MEM_ID) return;
     setIsLoading(true);
     try {
-      fetch(`http://localhost:3001/api/workout/getLatestFinishedWorkoutId?mem_id=${member.MEM_ID}`)
-        .then(res => res.json())
-        .then(data => {
-          setWorId(data.data.WOR_ID);  
-          setWorIdView(data.data.WOR_ID_VIEW);
-        });
-      if (!wor_id) {
+      const params = {
+        mem_id: member.MEM_ID,
+      };              
+      const latestWorkout = await apiGet('/api/workout/getLatestFinishedWorkoutId', params);
+      setWorId(latestWorkout.data.WOR_ID);
+      setWorIdView(latestWorkout.data.WOR_ID_VIEW);
+      if (!latestWorkout.data.WOR_ID) {
         return setIsLoading(false);
       }
-      const resDetail = await fetch(`http://localhost:3001/api/workout/getWorkoutDetails?wor_id=${wor_id}&mem_id=${member.MEM_ID}`, {
-        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
-      });
-      const detailData = await resDetail.json();
+      const paramsDetail = {
+        wor_id: latestWorkout.data.WOR_ID,
+        mem_id: member.MEM_ID,
+      };
+      const detailData = await apiGet(`/api/workout/getWorkoutDetails`, paramsDetail);
       if (detailData.success && detailData.data.length > 0) {
         setExercises(detailData.data);
-
-        const resAi = await fetch('http://localhost:3001/api/member/analyzeWorkout', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          },
-          body: JSON.stringify({ MEM_ID: member.MEM_ID, WOR_ID: wor_id })
-        });
-        const aiData = await resAi.json();
-        console.log("AI 분석 결과:", aiData);
+        const aiData = await apiPost(
+            '/api/member/analyzeWorkout',
+            { 
+              MEM_ID: member.MEM_ID, 
+              WOR_ID: latestWorkout.data.WOR_ID 
+            }
+          );
         if (aiData.success) setAiAnalysis(aiData.data);
       }
     } catch (error) {

@@ -1,3 +1,4 @@
+import { getMyMember } from "@/lib/auth";
 import { useCallback, useEffect, useState } from "react";
 import type { Member } from "shared";
 
@@ -8,11 +9,10 @@ export const useUserSession = () => {
   const refetch = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:3001/api/member/me', { credentials: 'include' });
-      if (res.ok) {
-        const data = await res.json();
+    try {
+      const data = await getMyMember();
         setMember(data);
-      } else {
+      } catch (error) {
         setMember(null);
       }
     } catch {

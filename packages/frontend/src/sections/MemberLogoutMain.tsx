@@ -1,4 +1,5 @@
 import { useUser } from '@/hooks/UserContext';
+import { logoutMember } from '@/lib/auth';
 import axios from 'axios';
 import { LogOut, ShieldCheck } from 'lucide-react';
 import { useState } from 'react';
@@ -12,12 +13,7 @@ const MemberLogoutMain = () => {
   const handleLogout = async () => {
     setError(null);
     try {
-      await axios.post(
-        'http://localhost:3001/api/member/logout',
-        {},
-        { withCredentials: true }
-      );
-      console.log('로그아웃 성공');
+      await logoutMember();
       await refetch();  // 헤더 즉시 업데이트      
       navigate('/'); // 로그아웃 후 홈 페이지로
     } catch (e: any) {

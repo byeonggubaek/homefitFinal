@@ -13,14 +13,15 @@ import { ChartNoAxesCombined  } from 'lucide-react';
 import { useEffect, useState } from "react";
 import type { WorkoutHistory } from "shared";
 import { useUser } from "@/hooks/UserContext";
+import { apiGet } from "@/lib/auth";
 
 const WorkoutDashboardHis = () => {
   const {member} = useUser();  // Context에서 공유
    const [workoutHistory, setWorkoutHistory] = useState<WorkoutHistory[]>([]);
    useEffect(() => {
+      if (!member) return; // member 정보가 없으면 API 호출하지 않음
      // 그리드 데이터 
-     fetch(`http://localhost:3001/api/workout/getWorkoutHistory?mem_id=${member?.MEM_ID ?? ''}`)
-       .then(res => res.json())
+     apiGet('/api/workout/getWorkoutHistory', { mem_id: member.MEM_ID })
        .then(data => {
          setWorkoutHistory(data.data);  
      });    

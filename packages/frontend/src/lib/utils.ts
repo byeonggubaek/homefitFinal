@@ -4,8 +4,6 @@ import type { ChartConfig } from "@/components/ui/chart";
 import type { Column } from "@tanstack/react-table";
 import type { CSSProperties } from "react";
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
@@ -80,12 +78,10 @@ export const createWorkoutChartConfigWithPlan = (
     config[col.id + '_P'] = {
       label: `${col.name}(남은횟수)`,
       color: `var(${baseColor.replace('bg-table', '--plan')})`
-      //color: `var(--unreached)`
     };
     return config;
   }, {} as ChartConfig);
 };
-
 
 export type ChartIconMap = Record<string, React.ComponentType<{ className?: string }>>;
 
@@ -103,20 +99,6 @@ export const addIconsToConfig = (
     ])
   ) as ChartConfig;  // 타입 단언 최소화
 };
-
-export async function apiGet(path: any, query = {}) {
-  const queryString = new URLSearchParams(query).toString();
-  const url = queryString
-    ? `${BACKEND_URL}${path}?${queryString}`
-    : `${BACKEND_URL}${path}`;
-
-  const res = await fetch(url);
-  if (!res.ok) {
-    throw new Error(`API 요청 실패: ${res.status}`);
-  }
-
-  return res.json();
-}
 
 export const getCommonPinningStyles = <TData>(
   column: Column<TData>,

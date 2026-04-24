@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { useState } from 'react';
 import { useUser } from '@/hooks/UserContext';
 import { useNavigate } from 'react-router-dom'; // 1. import 추가
-import axios from 'axios';
+import { loginMember } from '@/lib/auth';
 
 export default function MemberLoginMain() {
   const { refetch } = useUser();  // 
@@ -22,30 +22,23 @@ export default function MemberLoginMain() {
       alert('아이디와 비밀번호를 모두 입력해주세요.');
       return;
     }
-    setLoading(true);
-    await axios.post('http://localhost:3001/api/member/login',
-      {
-        mem_id_act,          
-        mem_password
-      }, 
-      { 
-        withCredentials: true // 👈 세션 쿠키를 브라우저에 저장하기 위해 반드시 필요!
+    try {    
+      setLoading(true);
+      const data = await loginMember({
+        mem_id_act,
+        mem_password,
+      });
+      if (data.success) {
+          await refetch();
+          navigate('/workout/dashboard');
+        } else {
+          localStorage.setItem("memberID", "");
       }
-    )
-    .then(async (response) => {
-      if (response.data.success) {
-        await refetch();  // 헤더 즉시 업데이트
-        navigate('/workout/dashboard');
-      } else {
-        localStorage.setItem("memberID", "");        
-      }
-    })
-    .catch((error) => {
+    } catch (error) {
       console.error('로그인 오류:', error);
-    })
-    .finally(() => {
+    } finally {
       setLoading(false);
-    });
+    }
   };
   return (
     <div className="flex w-full gap-4 rounded-2xl bg-slate-50 items-stretch font-sans antialiased">

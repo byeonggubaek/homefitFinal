@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useUser } from "@/hooks/UserContext";
-import axios from "axios";
+import { getMemberships } from "@/lib/auth";
 import type { Membership } from "shared";
 
 const MemberProfilePremium = () => {
@@ -9,11 +9,15 @@ const MemberProfilePremium = () => {
 
     useEffect(() => {
         const loadData = async () => {
-            await axios.get('http://localhost:3001/api/member/getMemberships')
-                .then(response => {
-                    if (response.data.success) setMemberships(response.data.data);
-                })
-                .catch(error => console.error("멤버십 데이터 로딩 실패!", error));
+            try {
+            const data = await getMemberships();
+
+            if (data.success) {
+                setMemberships(data.data);
+            }
+            } catch (error) {
+            console.error("멤버십 데이터 로딩 실패!", error);
+            }
         };
         loadData();
     }, []); // 빈 배열이므로 컴포넌트가 처음 켜질 때 딱 한 번 실행

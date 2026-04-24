@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useEffect, useState } from "react"
 import { startOfMonth, endOfMonth, format } from 'date-fns'
 import { Medal } from 'lucide-react';
+import { apiGet } from "@/lib/auth"
 
 const now = new Date();
 const from_dt = startOfMonth(now);
@@ -24,9 +25,9 @@ const RewardRankingMain = () => {
   const [rankingData, setRankingData] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch(`http://localhost:3001/api/reward/getRanking?from_dt=${format(from_dt, 'yyyy-MM-dd')}&to_dt=${format(to_dt, 'yyyy-MM-dd')}`)
-      .then(res => res.json())
-      .then(data => setRankingData(data.data || []));
+    apiGet('/api/reward/getRanking', { from_dt: format(from_dt, 'yyyy-MM-dd'), to_dt: format(to_dt, 'yyyy-MM-dd') })
+      .then(data => setRankingData(data.data || []))
+      .catch(err => console.error("랭킹 fetch 실패:", err)) ;
   }, []);
 
   return (

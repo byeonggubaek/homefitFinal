@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { checkPassword } from '@/lib/auth';
 
 const MemberPwCheck = () => {
   const [password, setPassword] = useState('');
@@ -8,14 +8,9 @@ const MemberPwCheck = () => {
 
   const handleVerify = async () => {
     try {
-      const response = await axios.post(
-        'http://localhost:3001/api/member/pwcheck', 
-        { password },
-        { withCredentials: true } // 세션 쿠키 전송 필수
-      );
+      const data = await checkPassword(password);
 
-      if (response.data.success) {
-        // 성공 시 수정 페이지로 이동
+      if (data.success) {
         navigate('/member/edit');
       }
     } catch (error: any) {

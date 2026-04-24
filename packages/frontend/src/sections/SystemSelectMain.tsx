@@ -31,6 +31,7 @@ import {
   InputGroupText,
   InputGroupTextarea,
 } from "@/components/ui/input-group"
+import { apiPost } from "@/lib/auth"
 
 const formSchema = z.object({
   method: z.enum(["G", "P"], {
@@ -60,15 +61,10 @@ const SystemSelectMain = () => {
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
     try {
-      await fetch("http://localhost:3001/api/system/getSelectPrompt", {
-        method: "POST", // 실제 통신은 POST로 데이터를 보냄
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      })
-      .then(res => res.json())
-      .then(data => {
-         setGeneratedPrompt(data.data);  
-     });    
+      await apiPost('/api/system/getSelectPrompt', data)
+        .then(data => {
+          setGeneratedPrompt(data.data);  
+        });   
       toast.success("프롬프트가 생성되었습니다.");
     } catch (error) {
       toast.error("백엔드 호출 중 오류가 발생했습니다.");

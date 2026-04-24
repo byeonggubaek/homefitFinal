@@ -4,7 +4,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
          AlertDialogFooter, AlertDialogHeader, AlertDialogMedia, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Trash2Icon, CircleDollarSign, SettingsIcon, UserIcon } from "lucide-react"
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { logoutMember } from "@/lib/auth";
 
 const MemberProfileLeft = ({ onChildData }: { onChildData: (data: string) => void }) => {
     const { member } = useUser();
@@ -13,17 +13,12 @@ const MemberProfileLeft = ({ onChildData }: { onChildData: (data: string) => voi
 
     const handleLogout = async () => {
         try {
-        await axios.post(
-            'http://localhost:3001/api/member/logout',
-            {},
-            { withCredentials: true }
-        );
-        console.log('로그아웃 성공');
-        await refetch();  // 헤더 즉시 업데이트      
-        navigate('/'); // 로그아웃 후 홈 페이지로
+            await logoutMember();
+            await refetch();
+            navigate('/');
         } catch (e: any) {
-        } finally {
-        }
+            console.error('프로필 업데이트 실패:', e);
+        } 
     };
 
     

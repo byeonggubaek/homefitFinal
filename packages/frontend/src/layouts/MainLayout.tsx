@@ -6,14 +6,14 @@ import WdogAutoInput from '@/components/WdogAutoInput'
 import WdogAvatar from '@/components/WdogAvatar';
 import { useUser } from '@/hooks/UserContext';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
+import { apiGet } from '@/lib/auth';
 
 export default function MainLayout() {
   const {member} = useUser(); // 정보도 가져오기
   const isDarkMode = useDarkMode(); // 훅 호출
   const { data: navItems } = useQuery({
     queryKey: ['menus', member?.MEM_ID],
-    queryFn: () => fetch(`http://localhost:3001/api/getMenus`)
-                    .then(res => res.json())
+    queryFn: () => apiGet(`/api/getMenus`)
                     .then(data => {
                         return data.data;
                     }),  // 👈 바로 사용!

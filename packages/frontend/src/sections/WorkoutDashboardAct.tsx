@@ -16,6 +16,7 @@ import { useUser } from "@/hooks/UserContext"
 import { useNavigate } from "react-router-dom"
 import type { WorkoutDetail } from "shared"
 import WdogWorkout from "@/components/WdogWorkout"
+import { apiGet, apiPost } from "@/lib/auth"
 
 const WorkoutDashboardAct = () => {
   const navigate = useNavigate();  // 👈 navigate 함수 생성  
@@ -28,8 +29,7 @@ const WorkoutDashboardAct = () => {
   const [wor_id_view, setWorIdView] = useState(""); // 예시 운동 기록 ID
   useEffect(() => {
     // 운동정보 조회 
-    fetch(`http://localhost:3001/api/workout/getWorkoutDetails?mem_id=${member?.MEM_ID?? ''}&wor_id=${wor_id}`)
-      .then(res => res.json())
+    apiGet('/api/workout/getWorkoutDetails', { mem_id: member?.MEM_ID ?? '', wor_id: wor_id })
       .then(data => {
         setWorkouts(data.data); 
         setWorId(data.wor_id); // 첫 번째 운동 기록 ID 저장 (예시)
@@ -38,25 +38,21 @@ const WorkoutDashboardAct = () => {
   }, [member?.MEM_ID]);   
   const handleAIRecommend = async () => {
     if (isLoading) return;
-    
     setIsLoading(true);  
     try {
-      const response = await fetch('http://localhost:3001/api/ai/recExercise', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userProfile: { 
-            mem_id: member?.MEM_ID, 
-            wor_id: Number(wor_id),
-            intensity: intensity
-          }
-        })
+      if(!member) 
+        return;
+      const response = await apiPost('/api/ai/recExercise', {
+        userProfile: { 
+          mem_id: member.MEM_ID, 
+          wor_id: Number(wor_id),
+          intensity: intensity
+        }
       });
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      if(response.success !== true) {
+        throw new Error(response.message || "AI 추천 실패");
       }
-      const data = await response.json();
-      const formatted: WorkoutDetail[] = data.data.map((workout: any) => ({
+      const formatted: WorkoutDetail[] = response.data.map((workout: any) => ({
         WOO_ID: workout.WOO_ID,
         WOO_NAME: workout.WOO_NAME,
         WOO_IMG: workout.WOO_IMG,

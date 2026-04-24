@@ -4,7 +4,7 @@ import { endOfMonth, format, startOfMonth } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useUser } from "@/hooks/UserContext";
-import { apiGet } from "@/lib/utils";
+import { apiGet } from "@/lib/auth";
 import { MoreHorizontal } from "lucide-react";
 
 import type { ColDesc, WorkoutRecord } from "shared"

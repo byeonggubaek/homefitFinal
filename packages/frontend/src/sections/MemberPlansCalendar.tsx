@@ -6,6 +6,7 @@ import {
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useUser } from '@/hooks/UserContext';
+import { deleteMemberPlan, getMemberPlan, getMonthlyMemberPlan, getWorkoutList, insertMemberPlan } from '@/lib/auth';
 
 
 const MemberPlansCalendar = () => {
@@ -54,10 +55,10 @@ const MemberPlansCalendar = () => {
   // [1] 컴포넌트 켜질 때 딱 한 번! DB에서 전체 운동 목록 가져오기
   const loadWorkoutList = async () => {
     try {
-      const res = await axios.get('http://localhost:3001/api/workout/getWorkouts');
-      if (res.data.success && res.data.data.length > 0) {
-        setWorkoutList(res.data.data);
-        setSelectedWooId(res.data.data[0].WOO_ID);
+      const data = await getWorkoutList();
+      if (data.success && data.data.length > 0) {
+        setWorkoutList(data.data);
+        setSelectedWooId(data.data[0].WOO_ID);
       }
     } catch (err) {
       console.error("운동 목록 로드 실패:", err);
@@ -74,12 +75,11 @@ const MemberPlansCalendar = () => {
 
     try {
       setLoading(true);
-      const res = await axios.get(`http://localhost:3001/api/member/getMemberPlan`, {
-        params: { memberId: member.MEM_ID, date: formatDate(selectedDate) }
-      });
-      if (res.data.success) {
-        console.log("로드된 계획들:", res.data.data);
-        setPlans(res.data.data);
+
+      const data = await getMemberPlan(member.MEM_ID, formatDate(selectedDate));
+
+      if (data.success) {
+        setPlans(data.data);
       }
     } catch (err) {
       console.error("일정 불러오기 실패:", err);
@@ -122,8 +122,9 @@ const MemberPlansCalendar = () => {
         MEP_UNIT: selectedWorkoutObj.WOO_UNIT
       };
 
-      const res = await axios.post('http://localhost:3001/api/member/insertMemberPlan', newPlan);
-      if (res.data.success) {
+      const data = await insertMemberPlan(newPlan);
+
+      if (data.success) {
         setIsModalOpen(false);
         setTargetReps('');
         setTargetSets('');
@@ -145,15 +146,12 @@ const MemberPlansCalendar = () => {
   const handleDelete = async (MEP_ID: number) => {
     // 실수로 지우는 걸 방지하기 위해 한 번 물어봅니다.
     if (!window.confirm("이 운동 계획을 삭제하시겠습니까?")) return;
-
     try {
-      // 🚨 백엔드 index.ts 에서 설정한 경로 /api/member/deleteMemberPlan/:goalId 로 요청을 보냅니다.
-      const res = await axios.delete(`http://localhost:3001/api/member/deleteMemberPlan?goalId=${MEP_ID}`);
+      const data = await deleteMemberPlan(MEP_ID);
 
-      if (res.data.success) {
-        // ✅ 삭제 성공 시 화면을 새로고침합니다.
-        loadPlans();        // 우측 리스트 새로고침
-        loadMonthStatus();  // 달력 동그라미 새로고침
+      if (data.success) {
+        loadPlans();       // 우측 리스트 새로고침
+        loadMonthStatus(); // 달력 동그라미 새로고침
       }
     } catch (err) {
       console.error("삭제 실패:", err);
@@ -163,15 +161,12 @@ const MemberPlansCalendar = () => {
   const loadMonthStatus = useCallback(async () => {
     if (!member?.MEM_ID) return;
     try {
-      // "2026-03" 형태로 잘라서 보냅니다.
       const yearMonth = formatDate(viewDate).substring(0, 7);
 
-      const res = await axios.get(`http://localhost:3001/api/member/getMonthlyMemberPlan`, {
-        params: { memberId: member.MEM_ID, month: yearMonth }
-      });
+      const data = await getMonthlyMemberPlan(member.MEM_ID, yearMonth);
 
-      if (res.data.success) {
-        setMonthStatus(res.data.data);
+      if (data.success) {
+        setMonthStatus(data.data);
       }
     } catch (err) {
       console.error("월간 요약 로드 실패:", err);

@@ -18,6 +18,7 @@ import { ChevronDownIcon } from "lucide-react"
 
 import type { MenuPos } from "shared";
 import { Link } from "react-router-dom";
+import { apiGet } from "@/lib/auth";
 
 interface WgodBreadcrumbProps {
   page : string
@@ -29,8 +30,7 @@ const WgodBreadcrumb = (
 {
   const [menuPos, setMenuPos] = useState<MenuPos>();
   useEffect(() => {
-    fetch(`http://localhost:3001/api/getMenuPos?page=${page}`)
-      .then(res => res.json())
+    apiGet('/api/getMenuPos', { page : page })
       .then(data => {
         setMenuPos(data.data);
       });

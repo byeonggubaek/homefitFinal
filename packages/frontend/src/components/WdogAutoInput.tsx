@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input"
 import { useNavigate } from "react-router-dom"
 import { Search, X, Loader2, MoveRight } from "lucide-react"
 import type { NavSubItem } from 'shared';
+import { apiGet } from "@/lib/auth"
 
 interface WdogAutoInputProps {
   placeholder?: string
@@ -31,8 +32,7 @@ export default function WdogAutoInput({
 
     setLoading(true)
     try {
-      fetch('http://localhost:3001/api/searchMenus?key=' + encodeURIComponent(key))
-        .then(res => res.json())
+      apiGet('/api/searchMenus', { key })
         .then(data => {
           if(open === false) {
             setOpen(true)

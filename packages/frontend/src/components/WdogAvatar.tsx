@@ -6,6 +6,7 @@ import { useUser } from '@/hooks/UserContext';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useState } from 'react';
+import { logoutMember } from '@/lib/auth';
 
 const WdogAvatar = () => {
   const navigate = useNavigate();
@@ -18,11 +19,7 @@ const WdogAvatar = () => {
     setLoading(true);
     setError(null);
     try {
-      await axios.post(
-        'http://localhost:3001/api/member/logout',
-        {},
-        { withCredentials: true }
-      );
+      await logoutMember();
       await refetch();  // 헤더 즉시 업데이트      
       navigate('/'); // 로그아웃 후 홈 페이지로
     } catch (e: any) {

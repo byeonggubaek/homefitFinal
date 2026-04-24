@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useNavigate } from "react-router-dom";
+import { signupMember } from "@/lib/auth";
 
 // [1] Zod 스키마
 const formSchema = z.object({
@@ -37,19 +38,15 @@ const MemberSignupMain = () => {
 
   async function onSubmit(data: FormData) {
     try {
-      const response = await fetch("http://localhost:3001/api/member/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-      const result = await response.json();
+      const result = await signupMember(data);
+
       if (result.success) {
-        navigate('/member/login'); // 로그인페이지로
+        navigate('/member/login');
       } else {
-        toast.error(result.error || "처리 중 오류 발생");
+        toast.error(result.error || '처리 중 오류 발생');
       }
     } catch (error) {
-      toast.error("통신 오류 발생");
+      toast.error('통신 오류 발생');
     }
   }
   const watchId = form.watch("mem_id_view");

@@ -7,6 +7,7 @@ import { format, endOfMonth } from 'date-fns';
 import type { PointHistory } from "shared";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "@/hooks/UserContext";
+import { apiGet } from "@/lib/auth";
 
 const CountUp = ({ end, duration = 1000 }: { end: number; duration?: number }) => {
     const [count, setCount] = useState(0);
@@ -72,8 +73,12 @@ export default function RewardPointMain() {
         const toDate = format(monthEnd, 'yyyy-MM-dd');
 
         // 1. 포인트 내역 가져오기
-        fetch(`http://localhost:3001/api/reward/getPoint?mem_id=${mem_id}&from=${fromDate}&to=${toDate}`)
-            .then(res => res.json())
+        const params = {
+          mem_id: mem_id,
+          from: fromDate,
+          to: toDate,
+        };        
+        apiGet('/api/reward/getPoint', params)
             .then(result => {
                 if (result.success) {
                     setHistoryData(result.data);
@@ -84,15 +89,16 @@ export default function RewardPointMain() {
         setTotalPoints(Number(member?.MEM_POINT) || 0);    
 
         // 3. 업적 현황 가져오기 (0/0 해결)
-        fetch(`http://localhost:3001/api/reward/get_achievement_list?mem_id=${mem_id}`)
-            .then(res => res.json())
+        const achievementParams = { mem_id: mem_id };
+        apiGet('/api/reward/get_achievement_list', achievementParams)
             .then(result => {
                 if (result.success) {
                     const completed = result.data.filter((a: any) => a.status === 'completed');
                     setCompletedCount(completed.length);
                     setTotalCount(result.data.length);
                 }
-            });
+            })
+            .catch(err => console.error("업적 fetch 실패:", err));
     }, [member?.MEM_ID]);
 
     // 💡 [핵심] 리스트에 있는 모든 포인트를 합산하여 표시 (1,800P 연출)
