@@ -3,7 +3,7 @@ cd packages/frontend
 npm run dev
 
 #2. 백앤드 폴더로 이동 & 기동
-cd packages/backend 
+cd packages/backend
 npm run dev
 
 #3. 공통 폴더로 이동 & 기동

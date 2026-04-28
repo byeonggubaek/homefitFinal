@@ -22,6 +22,7 @@ import MemberProfileEdit from "./sections/MemberProfileEdit.tsx";
 import MemberProfilePwCheck from "./sections/MemberProfilePwCheck.tsx";
 import MemberWorkReport from "./pages/MemberWorkReport.tsx";
 import RewardRanking from "./pages/RewardRanking.tsx";
+import HistoryQandA from "./pages/HistoryQandA.tsx";
 
 function App() {
   return (
@@ -33,11 +34,12 @@ function App() {
         {/* Workout */}
         <Route path="workout/dashboard" element={<WorkoutDashboard />} />
         <Route path="workout/start/:wor_id/:wor_id_view" element={<WorkoutStart />} />
+
         
         {/* History */}
         <Route path="history/state" element={<HistoryState />} />
         <Route path="history/content" element={<HistoryContent />} />
-        
+        <Route path="history/qanda" element={<HistoryQandA />} />        
         {/* Reward */}
         <Route path="reward/exchange" element={<RewardExchange />} />
         <Route path="reward/point" element={<RewardPoint />} />
