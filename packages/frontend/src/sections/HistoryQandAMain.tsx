@@ -1,4 +1,4 @@
-import WdogEditor from '@/components/WdogEdirot';
+import WdogEditor from '@/components/WdogEditor';
 
 const HistoryQandAMain = () => {
   return (
