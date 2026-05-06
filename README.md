@@ -29,4 +29,5 @@
 12. Python에서 Machine Learning을 이용하여 AI 모델을 이용할 수 있다.  
 
 ## 5.변경기록 
-1. 2026-04-24 : 페이지처리와 테이블 검색등의 기능을 포함하는 TableGrid 컨트롤 추가 (예제: HistoryContentMain.tsx)
+1. 2026-04-24 : 페이지처리와 테이블 검색등의 기능을 포함하는 TanStack TableGrid 컨트롤(WdogTableData) 추가 (예제: HistoryContentMain.tsx)
+2. 2026-04-30 : Tipta editor를 이용한 notion 같은 편집기 컨트롤(WdogEditor) 추가 - redo, undo 기능추가(예제: HistoryQandAMain.tsx)
